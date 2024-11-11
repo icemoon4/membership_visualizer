@@ -20,11 +20,11 @@ from rest_framework import routers
 from membership import views
 
 router = routers.DefaultRouter()
-router.register(r'members', views.MemberView, 'member')
+router.register(r"members", views.MemberView, "member")
 
 # http://localhost:8000/api/members/
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("membership.urls")),
-    #path("api/", include(router.urls))
+    # path("api/", include(router.urls))
 ]

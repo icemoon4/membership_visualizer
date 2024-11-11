@@ -1,10 +1,12 @@
-from django.shortcuts import get_object_or_404, render
-from django.http import JsonResponse
-from rest_framework import viewsets
-from membership.serializers import MemberSerializer
-from membership.models import Member
-#import json
+# import json
 from django.core import serializers
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render
+from rest_framework import viewsets
+from rest_framework.decorators import api_view
+
+from membership.models import Member
+from membership.serializers import MemberSerializer
 
 
 # Create your views here.
@@ -26,8 +28,8 @@ def dashboard_with_pivot(request):
 
 
 def pivot_data(request):
-    #dataset = MemberSerializer(Member.objects.all(), many=True)
-    #return JsonResponse(json.loads(json.dumps(dataset.data)), safe=False)
+    # dataset = MemberSerializer(Member.objects.all(), many=True)
+    # return JsonResponse(json.loads(json.dumps(dataset.data)), safe=False)
     dataset = Member.objects.all()
     data = serializers.serialize("json", dataset)
     return JsonResponse(data, safe=False)
@@ -36,3 +38,16 @@ def pivot_data(request):
 class MemberView(viewsets.ModelViewSet):
     serializer_class = MemberSerializer
     queryset = Member.objects.all()
+
+
+@api_view(["GET"])
+def member_list(request):
+    if request.method == "GET":
+        members = Member.objects.all()
+        name = request.GET.get("first_name")
+        if name:
+            members = members.filter(first_name__icontains=name)
+
+        members_serializer = MemberSerializer(members, many=True)
+        return JsonResponse(members_serializer.data, safe=False)
+    return JsonResponse([], safe=False)

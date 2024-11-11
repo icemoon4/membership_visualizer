@@ -92,10 +92,10 @@ class Member(models.Model):
     email = models.EmailField(unique=True)
     do_not_call = models.BooleanField(default=False)
     p2ptext_optout = models.BooleanField(default=False)
-    best_phone = models.IntegerField()
-    mobile_phone = models.IntegerField(blank=True, null=True)
-    home_phone = models.IntegerField(blank=True, null=True)
-    work_phone = models.IntegerField(blank=True, null=True)
+    best_phone = models.CharField(max_length=10)
+    mobile_phone = models.CharField(blank=True, null=True, max_length=10)
+    home_phone = models.CharField(blank=True, null=True, max_length=10)
+    work_phone = models.CharField(blank=True, null=True, max_length=10)
     join_date = models.DateField()
     xdate = models.DateField()
     membership_type = models.CharField(
@@ -118,7 +118,7 @@ class Member(models.Model):
     )
     union_name = models.CharField(max_length=255, blank=True, null=True)
     union_local = models.CharField(max_length=255, blank=True, null=True)
-    accomodations = models.TextField(blank=True, null=True)
+    accommodations = models.TextField(blank=True, null=True)
     race = models.ManyToManyField("Race", blank=True)
     student_yes_no = models.CharField(
         choices=STUDENT_CHOICES, blank=True, null=True, max_length=255
@@ -158,7 +158,7 @@ class Member(models.Model):
 
 
 class Committee(models.Model):
-    committee_name = models.CharField(max_length=255, primary_key=True)
+    committee_name = models.CharField(max_length=255, unique=True)
     agenda_link = models.CharField(max_length=255)
     status = models.CharField(
         choices=COMMITTEE_STATUSES, default="active", max_length=25
@@ -178,6 +178,9 @@ class Committee(models.Model):
         on_delete=models.PROTECT,
     )
 
+    def __str__(self):
+        return f"{self.committee_name}"
+
 
 class Event(
     models.Model
@@ -188,17 +191,30 @@ class Event(
         Committee, blank=True, null=True, on_delete=models.PROTECT
     )
 
+    def __str__(self):
+        return f"{self.event_name}"
+
 
 class EventAttendance(models.Model):
     member = models.ForeignKey(Member, on_delete=models.PROTECT)
     event = models.ForeignKey(Event, on_delete=models.PROTECT)
-    status = models.CharField(choices=EVENT_ATTENDANCE_CHOICES, max_length=100)
-    rsvp_status = models.CharField(choices=EVENT_RSVP_CHOICES, max_length=100)
+    status = models.CharField(
+        choices=EVENT_ATTENDANCE_CHOICES, max_length=100, null=True, blank=True
+    )
+    rsvp_status = models.CharField(
+        choices=EVENT_RSVP_CHOICES, max_length=100, null=True, blank=True
+    )
 
 
 class Race(models.Model):
-    label = models.CharField(max_length=255)
+    label = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return f"{self.label}"
 
 
 class Region(models.Model):
-    label = models.CharField(max_length=255)
+    label = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return f"{self.label}"
