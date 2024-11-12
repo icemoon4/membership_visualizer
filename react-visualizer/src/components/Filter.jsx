@@ -51,12 +51,12 @@ export default function Filter({ MemberList = [] }) {
     ["race", "committee", "region"], //these expect arrays
   ];
 
-  let queryTerms = useRef(new Map());
+  let queryParameters = useRef(new Map());
 
   const filteredMembers = MemberList.filter((member) => {
     const fields = member.fields;
-    if (!queryTerms.current.size) {
-      console.log("queryterms length 0");
+    if (!queryParameters.current.size) {
+      console.log("queryParameters length 0");
       for (const key in fields) {
         const value = fields[key];
         if (
@@ -68,50 +68,55 @@ export default function Filter({ MemberList = [] }) {
       }
       return false;
     } //end of 'naive' search w/o terms
-    else if (queryTerms.current.size > 0) {
-      console.log("queryterms length greater than 1");
-      for (const [key, term] of queryTerms.current) {
-        console.log(`HEYYY OVER HERE ${key}:${term}`);
+    //if our user used parameters
+    else if (queryParameters.current.size > 0) {
+      let matches = 0;
+      for (const [key, term] of queryParameters.current) {
+        console.log(`HEYYY OVER HERE ${key}:${term} and fields is ${fields}`);
+        if (
+          !fields[key].toString().toLowerCase().includes(term.toLowerCase())
+        ) {
+          //we know this isn't our guy, don't bother completing the loop
+          break;
+        } else {
+          //great, now keep checking for more matches...
+          matches++;
+        }
+      }
+      if (matches === queryParameters.current.size) {
+        return true;
+      } else {
+        return false;
       }
     }
   });
 
-  function parseQuery(e) {
-    const term = e.target.value;
-    queryTerms.current.clear();
-    //we assume if : is present, then the user is searching by field
-    if (term.includes(":")) {
-      //regex that splits on spaces and : that are not in quotation marks
-      //we're assuming the user input their fields correctly: that the filter is first (odd), and what they're filtering is second (even)
-      const searchFields = term.match(/(?:[^\s:"']+|['"][^'"]*["'])+/g);
-      console.log(searchFields);
-      for (const i in searchFields) {
-        for (const j in allFields) {
-          if (allFields[j].includes(searchFields[i])) {
-            if (i < searchFields.length - 1) {
-              //so queryTerms will have a key first_name:  with value alex, etc
-              queryTerms.current.set(searchFields[i], searchFields[i + 1]);
-              console.log(
-                "added to queryTerms, queryTerms.size ",
-                queryTerms.current.size
-              );
-            }
-          }
-        }
+  function handleSubmit(e) {
+    e.preventDefault();
+    queryParameters.current.clear(); //to prevent parameters lingering from previous search
+    if (query.includes(":")) {
+      //we know the user is using parameters in this case
+      const keyValuePairs = query.match(/(?:[^\s:"']+|['"][^'"]*["'])+/g);
+      console.log(keyValuePairs);
+      for (let i = 0; i < keyValuePairs.length - 1; i += 2) {
+        queryParameters.current.set(keyValuePairs[i], keyValuePairs[i + 1]);
+        console.log(
+          keyValuePairs[i] + ":" + queryParameters.current.get(keyValuePairs[i])
+        );
       }
     }
-    setQuery(e.target.value.toLowerCase());
-  }
-
-  function handleSubmit(e) {
-
   }
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(e) => handleSubmit(e)}>
         {console.log(MemberList)}
-        <input value={query} onChange={(e) => parseQuery(e)} type="text" />
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value.toLowerCase())}
+          type="text"
+        />
+        <button>Go!</button>
       </form>
       {filteredMembers.length > 0 ? (
         filteredMembers.map((member) => (
