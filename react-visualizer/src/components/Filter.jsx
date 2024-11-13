@@ -1,14 +1,19 @@
 import React, { useState, useRef } from "react";
 import Member from "./Member";
+import AdvancedFilter from "./advancedFilter.jsx";
+import styles from "./Filter.module.css";
 
 export default function Filter({ MemberList = [] }) {
   const [query, setQuery] = useState("");
+  const [stateParameters, setStateParameters] = useState({}); //obj instead of map for ease of adding params
   const [reRender, setReRender] = useState(false);
-  let queryParameters = useRef(new Map());
 
   const filteredMembers = MemberList.filter((member) => {
     const fields = member.fields;
-    if (!queryParameters.current.size && query !== "") {
+    console.log(member);
+    const numOfParams = Object.keys(stateParameters).length;
+    if (!numOfParams && query !== "") {
+      //this is our simple query, w/o params logic
       console.log("queryParameters length 0");
       for (const key in fields) {
         const value = fields[key];
@@ -20,16 +25,22 @@ export default function Filter({ MemberList = [] }) {
         }
       }
       return false;
+    } else if (!numOfParams && query === "") {
+      return true; //if search is blank, return every member
     } //end of 'naive' search w/o terms
-    else if (!queryParameters.current.size && query === "") {
-      return true;
-    }
     //if our user used parameters
-    else if (queryParameters.current.size > 0) {
+    else if (numOfParams > 0) {
       let matches = 0;
-      for (const [key, term] of queryParameters.current) {
-        console.log(`HEYYY OVER HERE ${key}:${term} and fields is ${fields}`);
-        if (!fields[key].toString().toLowerCase().includes(term)) {
+      for (const key of Object.keys(stateParameters)) {
+        if (fields[key] === null || fields[key] === undefined) {
+          break; //if the value is null this is really not our guy
+        }
+        const searchTerm = stateParameters[key];
+        const memberTerm = fields[key].toString().toLowerCase();
+        console.log(
+          `HEYYY OVER HERE ${key}:${searchTerm} and fields is ${memberTerm}`
+        );
+        if (!memberTerm.includes(searchTerm)) {
           //we know this isn't our guy, don't bother completing the loop
           break;
         } else {
@@ -37,7 +48,7 @@ export default function Filter({ MemberList = [] }) {
           matches++;
         }
       }
-      if (matches === queryParameters.current.size) {
+      if (matches === numOfParams) {
         return true;
       } else {
         return false;
@@ -47,34 +58,42 @@ export default function Filter({ MemberList = [] }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    queryParameters.current.clear(); //to prevent parameters lingering from previous search
+    const currentParameters = {};
+    setStateParameters({}); //to prevent parameters lingering from previous search
     if (query.includes(":")) {
       //we know the user is using parameters in this case
-      const keyValuePairs = query
+      const paramPairsArray = query
         .toLowerCase()
-        .match(/(?:[^\s:"']+|['"][^'"]*["'])+/g);
-      console.log(keyValuePairs);
-      for (let i = 0; i < keyValuePairs.length - 1; i += 2) {
-        queryParameters.current.set(keyValuePairs[i], keyValuePairs[i + 1]);
-        console.log(
-          keyValuePairs[i] + ":" + queryParameters.current.get(keyValuePairs[i])
-        );
+        .match(/(?:[^\s:"']+|['"][^'"]*["'])+/g); //so clean those params up and put em in an array
+      console.log(paramPairsArray);
+      for (let i = 0; i < paramPairsArray.length - 1; i += 2) {
+        const key = paramPairsArray[i];
+        const value = paramPairsArray[i + 1];
+        currentParameters[key] = value;
       }
+      setStateParameters(currentParameters); //updates our state to reflect our placeholder parameter object
+      console.log(`length is ${Object.keys(stateParameters).length}`);
+      console.log(stateParameters);
     }
-    setReRender(!reRender);
+    setReRender(!reRender); //setting state forces the page to rerender basically
   }
 
   return (
-    <div>
-      <form onSubmit={(e) => handleSubmit(e)}>
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          type="text"
-        />
-        <button>Go!</button>
-      </form>
-      <div key={reRender}>
+    <div className={styles.fullPage}>
+      <div className={styles.filterSideBar}>
+        <form onSubmit={(e) => handleSubmit(e)}>
+          <input
+            value={query}
+            placeholder="first_name:Anton last_name:Faulkner"
+            onChange={(e) => setQuery(e.target.value)}
+            type="text"
+          />
+          <button>Go!</button>
+        </form>
+
+        <AdvancedFilter setStateParameters={setStateParameters} />
+      </div>
+      <div className={styles.membersList} key={reRender}>
         {filteredMembers.length > 0 ? (
           filteredMembers.map((member) => (
             <Member key={member.pk} fields={member.fields} />

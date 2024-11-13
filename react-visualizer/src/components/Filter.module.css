@@ -1,0 +1,23 @@
+.filterSideBar {
+  width: 320px;
+  order: 1;
+}
+
+.membersList {
+  order: 2;
+}
+
+.fullPage {
+  display: flex;
+}
+
+#advancedFilter {
+}
+
+.hidden {
+  display: none;
+}
+
+input:focus::placeholder {
+  color: transparent;
+}
