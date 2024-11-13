@@ -10,7 +10,7 @@ export default function Member({ fields }) {
       <div>Email: {fields.email}</div>
       <div>
         Address: {fields.address1} {fields.address2}, {fields.city}{" "}
-        {fields.state}
+        {fields.state} {fields.vaccinated}
       </div>
     </div>
   );
