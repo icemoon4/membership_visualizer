@@ -1,17 +1,43 @@
+.fullPage {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+.searchBar {
+  height: 100px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 25px;
+}
+
+.toggleAdvancedSearch {
+  text-decoration: solid;
+  margin: 0 auto;
+}
+
+.content {
+  display: flex;
+  flex-grow: 1;
+}
+
 .filterSideBar {
-  width: 320px;
+  width: 350px;
   order: 1;
+  position: sticky;
+  top: 0;
+  padding-left: 20px;
 }
 
 .membersList {
+  flex-grow: 1;
   order: 2;
-}
-
-.fullPage {
-  display: flex;
-}
-
-#advancedFilter {
+  padding: 1rem;
+  margin: 0 auto;
+  max-width: 800px;
 }
 
 .hidden {
@@ -20,4 +46,9 @@
 
 input:focus::placeholder {
   color: transparent;
+}
+
+input[type="checkbox"]:checked {
+  border-color: var(--dsa-red);
+  accent-color: var(--dsa-red);
 }

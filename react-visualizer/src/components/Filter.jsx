@@ -8,6 +8,11 @@ export default function Filter({ MemberList = [] }) {
   const [query, setQuery] = useState("");
   const [stateParameters, setStateParameters] = useState({}); //obj instead of map for ease of adding params
   const [reRender, setReRender] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+
+  const toggleVisibility = () => {
+    setIsVisible((prev) => !prev);
+  };
 
   const filteredMembers = MemberList.filter((member) => {
     const fields = member.fields;
@@ -50,24 +55,34 @@ export default function Filter({ MemberList = [] }) {
 
   return (
     <div className={styles.fullPage}>
-      <SearchFilter
-        setStateParameters={setStateParameters}
-        query={query}
-        setQuery={setQuery}
-        setReRender={setReRender}
-        reRender={reRender}
-      />
-      <div className={styles.filterSideBar}>
-        <AdvancedFilter setStateParameters={setStateParameters} />
-      </div>
-      <div className={styles.membersList} key={reRender}>
-        {filteredMembers.length > 0 ? (
-          filteredMembers.map((member) => (
-            <Member key={member.pk} fields={member.fields} />
-          ))
-        ) : (
-          <li>No results found</li>
-        )}
+      <header className={styles.searchBar}>
+        <SearchFilter
+          setStateParameters={setStateParameters}
+          query={query}
+          setQuery={setQuery}
+          setReRender={setReRender}
+          reRender={reRender}
+        />
+        <a className={styles.toggleAdvancedSearch} onClick={toggleVisibility}>
+          {isVisible ? "Close" : "Open"} advanced search
+        </a>
+      </header>
+      <div className={styles.content}>
+        <aside className={styles.filterSideBar}>
+          <AdvancedFilter
+            setStateParameters={setStateParameters}
+            isVisible={isVisible}
+          />
+        </aside>
+        <main className={styles.membersList} key={reRender}>
+          {filteredMembers.length > 0 ? (
+            filteredMembers.map((member) => (
+              <Member key={member.pk} fields={member.fields} />
+            ))
+          ) : (
+            <li>No results found</li>
+          )}
+        </main>
       </div>
     </div>
   );

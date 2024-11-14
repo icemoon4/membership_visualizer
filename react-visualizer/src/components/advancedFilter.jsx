@@ -4,13 +4,8 @@ import FilterFieldString from "./filterFieldString.jsx";
 import FilterFieldBool from "./filterFieldBool.jsx";
 import FilterFieldDropdown from "./filterFieldDropdown.jsx";
 
-export default function advancedFilter({ setStateParameters }) {
-  const [isVisible, setIsVisible] = useState(false);
+export default function advancedFilter({ setStateParameters, isVisible }) {
   const [currentParameters, setCurrentParameters] = useState({});
-
-  const toggleVisibility = () => {
-    setIsVisible((prev) => !prev);
-  };
 
   const allSearchableFields = [
     "first_name",
@@ -161,9 +156,6 @@ export default function advancedFilter({ setStateParameters }) {
 
   return (
     <div id="advancedFilterComponent">
-      <button onClick={toggleVisibility}>
-        {isVisible ? "Close" : "Open"} advanced search
-      </button>
       {isVisible && (
         <form
           id="advancedFilterForm"
