@@ -1,3 +1,5 @@
+import styles from "./searchFilter.module.css";
+
 export default function SearchFilter({
   setStateParameters,
   query,
@@ -34,6 +36,7 @@ export default function SearchFilter({
         placeholder="first_name:Anton last_name:Faulkner"
         onChange={(e) => setQuery(e.target.value)}
         type="text"
+        className={styles.Search}
       />
       <button>Go!</button>
     </form>

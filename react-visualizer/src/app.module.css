@@ -13,6 +13,10 @@ body {
   color: var(--body-font-color);
 }
 
+input {
+  padding: 0.25em;
+}
+
 input:focus {
   outline: none;
 }
