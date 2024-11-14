@@ -6,7 +6,7 @@ import FilterFieldDropdown from "./filterFieldDropdown.jsx";
 
 export default function advancedFilter({ setStateParameters }) {
   const [isVisible, setIsVisible] = useState(false);
-  let currentParameters = {};
+  const [currentParameters, setCurrentParameters] = useState({});
 
   const toggleVisibility = () => {
     setIsVisible((prev) => !prev);
@@ -136,49 +136,26 @@ export default function advancedFilter({ setStateParameters }) {
   const membershipFields = ["", "Member", "Member in Good Standing", "Lapsed"];
 
   function setQuery(key, value) {
-    console.log(key + ":" + value);
+    console.log("is this getting called");
     value = value.toString().toLowerCase();
-    currentParameters[key] = value;
-  }
-
-  function getQuery(key) {
-    if (!currentParameters[key]) {
-      return "";
-    } else {
-      return currentParameters[key];
+    if (key === "union_member") {
+      value = value === "true" ? "yes" : "no";
     }
+    setCurrentParameters((prevParams) => ({
+      ...prevParams,
+      [key]: value,
+    }));
   }
 
   function handleSubmit(e) {
     e.preventDefault();
-    const allTextFields = document.querySelectorAll(
-      '#advancedFilter div input[type="text"]'
-    );
-    const allCheckBoxes = document.querySelectorAll(
-      '#advancedFilter div input[type="checkbox"]'
-    );
-    const allSelects = document.querySelectorAll("#advancedFilter div select");
-    const allFields = [allTextFields, allCheckBoxes, allSelects];
-    for (const textField of allTextFields) {
-      const key = textField.id.substring(4);
-      const value = textField.value;
-      if (value) {
-        setQuery(key, value);
-      }
-    }
-    for (const select of allSelects) {
-      const key = select.id.substring(4);
-      const value = select.value;
-      if (value) {
-        setQuery(key, value);
-      }
-    }
-    console.log(currentParameters);
+    console.log("heyyyy helpppp", currentParameters);
     setStateParameters(currentParameters);
   }
 
   function clearFilters() {
     document.querySelector("#advancedFilterForm").reset();
+    setCurrentParameters({});
     setStateParameters({});
   }
 
@@ -195,7 +172,11 @@ export default function advancedFilter({ setStateParameters }) {
         >
           {allSearchableFields.map((field) =>
             stringFields.includes(field) ? (
-              <FilterFieldString name={field} key={`component_${field}`} />
+              <FilterFieldString
+                name={field}
+                key={`component_${field}`}
+                setQuery={setQuery}
+              />
             ) : boolFields.includes(field) ? (
               <FilterFieldBool
                 name={field}
@@ -227,7 +208,7 @@ export default function advancedFilter({ setStateParameters }) {
               console.log("unrecognized field; how'd you manage this?")
             )
           )}
-          <button>Search</button>
+          <button onClick={handleSubmit}>Search</button>
           <button onClick={clearFilters}>Clear filters</button>
         </form>
       )}

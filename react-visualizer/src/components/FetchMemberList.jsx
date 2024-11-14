@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import NewMembersList from "./NewMembersList.jsx";
 
 export default function FetchMemberList({ MemberList, setMembersList }) {
   const [isLoading, setIsLoading] = useState(true);

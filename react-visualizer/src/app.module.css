@@ -1,0 +1,22 @@
+/* colors referenced from https://www.dsausa.org/resources/faq/ */
+:root {
+  --dsa-red: #e70109;
+  --body-font-color: #323232;
+  --nav-links: #241f20;
+  --background: #f4eded;
+}
+
+body {
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: var(--background);
+  margin: 0 auto;
+  color: var(--body-font-color);
+}
+
+input:focus {
+  outline: none;
+}
+
+a {
+  color: var(--dsa-red);
+}
