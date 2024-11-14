@@ -17,6 +17,16 @@
 .toggleAdvancedSearch {
   text-decoration: solid;
   margin: 0 auto;
+  cursor: pointer;
+}
+
+.filterSideBar form div {
+  padding: 5px 6px 5px 5px;
+  border-bottom: 1px dashed #323232;
+}
+
+.filterSideBar form div label {
+  padding-right: 5px;
 }
 
 .content {
@@ -25,7 +35,6 @@
 }
 
 .filterSideBar {
-  width: 350px;
   order: 1;
   position: sticky;
   top: 0;
@@ -37,7 +46,6 @@
   order: 2;
   padding: 1rem;
   margin: 0 auto;
-  max-width: 800px;
 }
 
 .hidden {

@@ -4,6 +4,7 @@
   --body-font-color: #323232;
   --nav-links: #241f20;
   --background: #f4eded;
+  --button-dark: #241f20;
 }
 
 body {
@@ -23,4 +24,36 @@ input:focus {
 
 a {
   color: var(--dsa-red);
+}
+
+button {
+  font-weight: 600 !important;
+  border-width: 2px;
+  border-radius: 4px;
+  line-height: 1;
+  padding: 0.75rem 0.75rem 0.625rem;
+  cursor: pointer;
+  color: white;
+  transition: 0.15s;
+}
+
+.redButton {
+  border-color: var(--dsa-red);
+  background-color: var(--dsa-red);
+}
+
+.redButton:hover {
+  background-color: #9f0005;
+}
+
+.whiteButton {
+  border-color: var(--button-dark);
+  color: var(--button-dark);
+  background-color: white;
+}
+
+.whiteButton:hover {
+  background-color: var(--button-dark);
+  border-color: var(--button-dark);
+  color: #fff;
 }

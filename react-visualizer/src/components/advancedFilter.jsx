@@ -3,6 +3,7 @@ import React, { useState, useRef } from "react";
 import FilterFieldString from "./filterFieldString.jsx";
 import FilterFieldBool from "./filterFieldBool.jsx";
 import FilterFieldDropdown from "./filterFieldDropdown.jsx";
+import mainStyles from "../app.module.css";
 
 export default function advancedFilter({ setStateParameters, isVisible }) {
   const [currentParameters, setCurrentParameters] = useState({});
@@ -200,8 +201,12 @@ export default function advancedFilter({ setStateParameters, isVisible }) {
               console.log("unrecognized field; how'd you manage this?")
             )
           )}
-          <button onClick={handleSubmit}>Search</button>
-          <button onClick={clearFilters}>Clear filters</button>
+          <button onClick={handleSubmit} className={mainStyles.redButton}>
+            Search
+          </button>
+          <button onClick={clearFilters} className={mainStyles.whiteButton}>
+            Clear filters
+          </button>
         </form>
       )}
     </div>
