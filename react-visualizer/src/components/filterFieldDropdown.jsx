@@ -16,7 +16,7 @@ export default function filterFieldDropdown({
       <select
         id={`adv_${name}`}
         name={`adv_${name}`}
-        onChange={(e) => setQuery(name, e.target.value.toString())}
+        onChange={(e) => setQuery(name, e.target.value)}
       >
         {selectOptions.map((curOption) => (
           <option value={curOption} key={`adv_${curOption}`}>

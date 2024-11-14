@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import styles from "./Filter.module.css";
-export default function filterFieldString({ name, setQuery, getQuery }) {
+export default function filterFieldString({ name, setQuery }) {
   function clean(name) {
     return (
       name.charAt(0).toUpperCase() + name.slice(1).replaceAll("_", " ") + "?: "
