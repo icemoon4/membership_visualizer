@@ -1,3 +1,13 @@
 .Search {
   width: 40vw;
 }
+
+.searchForm {
+  display: flex;
+  flex-direction: row;
+}
+
+.searchButton {
+  margin-left: -2px;
+  border-radius: 0px 4px 4px 0px;
+}

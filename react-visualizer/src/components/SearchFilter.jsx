@@ -1,4 +1,5 @@
 import styles from "./searchFilter.module.css";
+import mainStyles from "../app.module.css";
 
 export default function SearchFilter({
   setStateParameters,
@@ -30,15 +31,17 @@ export default function SearchFilter({
   }
 
   return (
-    <form onSubmit={(e) => handleSubmit(e)}>
+    <form className={styles.searchForm} onSubmit={(e) => handleSubmit(e)}>
       <input
         value={query}
-        placeholder="first_name:Anton last_name:Faulkner"
+        placeholder="first_name:Anton last_name:Faulkner new_member_past_month:true"
         onChange={(e) => setQuery(e.target.value)}
         type="text"
         className={styles.Search}
       />
-      <button>Go!</button>
+      <button className={`${mainStyles.redButton} ${styles.searchButton}`}>
+        Go!
+      </button>
     </form>
   );
 }
