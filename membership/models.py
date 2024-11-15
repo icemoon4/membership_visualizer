@@ -9,6 +9,7 @@ MEMBERSHIP_TYPES = (
 DUES_STATUSES = (
     ("never", "Never"),
     ("active", "Active"),
+    ("manual", "Manual"),
     ("canceled_by_failure", "Canceled by Failure"),
     ("canceled_by_admin", "Canceled by Admin"),
     ("canceled_by_processor", "Canceled by Processor"),
@@ -92,10 +93,10 @@ class Member(models.Model):
     email = models.EmailField(unique=True)
     do_not_call = models.BooleanField(default=False)
     p2ptext_optout = models.BooleanField(default=False)
-    best_phone = models.CharField(max_length=10)
-    mobile_phone = models.CharField(blank=True, null=True, max_length=10)
-    home_phone = models.CharField(blank=True, null=True, max_length=10)
-    work_phone = models.CharField(blank=True, null=True, max_length=10)
+    best_phone = models.CharField(blank=True, null=True, max_length=20)
+    mobile_phone = models.CharField(blank=True, null=True, max_length=20)
+    home_phone = models.CharField(blank=True, null=True, max_length=20)
+    work_phone = models.CharField(blank=True, null=True, max_length=20)
     join_date = models.DateField()
     xdate = models.DateField()
     membership_type = models.CharField(
@@ -131,7 +132,7 @@ class Member(models.Model):
     state = models.CharField(max_length=2, default="MA")
     zip = models.CharField(max_length=10)
     country = models.CharField(default="United States", max_length=50)
-    actionkit_id = models.IntegerField()
+    actionkit_id = models.IntegerField(primary_key=True)
     dsa_chapter = models.CharField(default="Worcester", max_length=50)
     ydsa_chapter = models.CharField(blank=True, null=True, max_length=255)
     new_member_past_month = models.BooleanField(default=False)
