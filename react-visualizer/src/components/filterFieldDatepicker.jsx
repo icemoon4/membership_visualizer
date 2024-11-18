@@ -9,11 +9,16 @@ export default function filterFieldDatepicker({ name, setQuery }) {
   const [textVisible, setVisibility] = useState(false);
 
   function clean(name) {
-    return name == "xdate"
-      ? "Membership expiry date:"
-      : name.charAt(0).toUpperCase() +
-          name.slice(1).replaceAll("_", " ") +
-          "?: ";
+    console.log(`cleaning ${name}`);
+    if (name === "xdate_before") {
+      return "Membership expires before: ";
+    } else if (name == "xdate_after") {
+      return "Membership expires after: ";
+    } else if (name === "join_date_after") {
+      return "Joined after: ";
+    } else if (name === "join_date_before") {
+      return "Joined before: ";
+    }
   }
 
   function newSetQuery(name, date) {
@@ -24,11 +29,10 @@ export default function filterFieldDatepicker({ name, setQuery }) {
 
   function toggleVisibility() {
     setVisibility(true);
-    console.log("why is this not triggering");
   }
 
   return (
-    <div className={styles.filterField} onClick={toggleVisibility}>
+    <div onClick={toggleVisibility}>
       <label>{`${clean(name)}`}</label>
       <DatePicker
         className={textVisible ? "active-datepicker" : "inactive-datepicker"}
