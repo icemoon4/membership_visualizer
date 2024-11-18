@@ -55,7 +55,12 @@ export default function advancedFilter({ setStateParameters, isVisible }) {
     "discord_status",
   ];
 
-  const dateFields = ["join_date_before", "join_date_after", "xdate_before", "xdate_after"];
+  const dateFields = [
+    "join_date_before",
+    "join_date_after",
+    "xdate_before",
+    "xdate_after",
+  ];
 
   const boolFields = [
     "do_not_call",
@@ -134,7 +139,6 @@ export default function advancedFilter({ setStateParameters, isVisible }) {
   const membershipFields = ["", "Member", "Member in Good Standing", "Lapsed"];
 
   function setQuery(key, value) {
-    console.log("is this getting called");
     value = value.toString().toLowerCase();
     if (key === "union_member") {
       value = value === "true" ? "yes" : "no";
@@ -147,7 +151,6 @@ export default function advancedFilter({ setStateParameters, isVisible }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    console.log("heyyyy helpppp", currentParameters);
     setStateParameters(currentParameters);
   }
 
@@ -209,12 +212,14 @@ export default function advancedFilter({ setStateParameters, isVisible }) {
               console.log("unrecognized field; how'd you manage this?")
             )
           )}
-          <button onClick={handleSubmit} className={mainStyles.redButton}>
-            Search
-          </button>
-          <button onClick={clearFilters} className={mainStyles.whiteButton}>
-            Clear filters
-          </button>
+          <div className={styles.buttonsContainer}>
+            <button onClick={handleSubmit} className={mainStyles.redButton}>
+              Search
+            </button>
+            <button onClick={clearFilters} className={mainStyles.whiteButton}>
+              Clear filters
+            </button>
+          </div>
         </form>
       )}
     </aside>

@@ -1,17 +1,22 @@
 import { useState } from "react";
-import FetchMemberList from "./components/FetchMemberList";
-import Filter from "./components/Filter";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import MembersList from "./components/MembersList";
+import PageNotFound from "./components/PageNotFound";
+import MembersStats from "./components/MembersStats";
+import Nav from "./components/Nav";
+import Login from "./components/Login";
 import styles from "./app.module.css";
 function App() {
-  const [MemberList, setMembersList] = useState([]);
   return (
-    <div className="App">
-      <FetchMemberList
-        setMembersList={setMembersList}
-        MemberList={MemberList}
-      />
-      <Filter MemberList={MemberList} />
-    </div>
+    <BrowserRouter>
+      <Nav />
+      <Routes>
+        <Route path="/" element={<MembersList />} />
+        <Route path="/statistics" element={<MembersStats />}></Route>
+        <Route path="/login" element={<Login />}></Route>
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

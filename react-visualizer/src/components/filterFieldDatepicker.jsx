@@ -2,7 +2,7 @@ import DatePicker from "react-datepicker";
 import React, { useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from "./Filter.module.css";
-import stylesDatepicker from "./filterFieldDatepicker.css";
+import stylesDatepicker from "./filterFieldDatepicker.css?inline";
 
 export default function filterFieldDatepicker({ name, setQuery }) {
   const [startDate, setStartDate] = useState(new Date());
