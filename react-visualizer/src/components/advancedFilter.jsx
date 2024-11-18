@@ -3,6 +3,7 @@ import React, { useState, useRef } from "react";
 import FilterFieldString from "./filterFieldString.jsx";
 import FilterFieldBool from "./filterFieldBool.jsx";
 import FilterFieldDropdown from "./filterFieldDropdown.jsx";
+import FilterFieldDatepicker from "./filterFieldDatepicker.jsx";
 import mainStyles from "../app.module.css";
 
 export default function advancedFilter({ setStateParameters, isVisible }) {
@@ -14,8 +15,11 @@ export default function advancedFilter({ setStateParameters, isVisible }) {
     "email",
     "do_not_call",
     "best_phone",
-    "join_date",
-    "xdate",
+    //"join_date",
+    "join_date_before",
+    "join_date_after",
+    "xdate_before",
+    "xdate_after",
     "membership_status",
     "union_member",
     "union_name",
@@ -27,7 +31,6 @@ export default function advancedFilter({ setStateParameters, isVisible }) {
     "state",
     "zip",
     "new_member_past_month",
-    "list_date",
     "discord_name",
     "discord_status",
     "vaccinated",
@@ -41,19 +44,18 @@ export default function advancedFilter({ setStateParameters, isVisible }) {
     "last_name",
     "email",
     "best_phone",
-    "join_date",
-    "xdate",
+
     "union_name",
     "student_school_name",
     "address1",
     "city",
     "zip",
-    "list_date",
+
     "discord_name",
     "discord_status",
   ];
 
-  const dropdownFields = ["", "membership_status", "mailing_pref", "state"];
+  const dateFields = ["join_date_before", "join_date_after", "xdate_before", "xdate_after"];
 
   const boolFields = [
     "do_not_call",
@@ -156,7 +158,7 @@ export default function advancedFilter({ setStateParameters, isVisible }) {
   }
 
   return (
-    <div id="advancedFilterComponent">
+    <aside className={styles.filterSideBar}>
       {isVisible && (
         <form
           id="advancedFilterForm"
@@ -172,6 +174,12 @@ export default function advancedFilter({ setStateParameters, isVisible }) {
               />
             ) : boolFields.includes(field) ? (
               <FilterFieldBool
+                name={field}
+                key={`component_${field}`}
+                setQuery={setQuery}
+              />
+            ) : dateFields.includes(field) ? (
+              <FilterFieldDatepicker
                 name={field}
                 key={`component_${field}`}
                 setQuery={setQuery}
@@ -209,6 +217,6 @@ export default function advancedFilter({ setStateParameters, isVisible }) {
           </button>
         </form>
       )}
-    </div>
+    </aside>
   );
 }

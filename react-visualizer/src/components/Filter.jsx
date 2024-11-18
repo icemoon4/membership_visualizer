@@ -3,6 +3,8 @@ import Member from "./Member";
 import AdvancedFilter from "./advancedFilter.jsx";
 import SearchFilter from "./SearchFilter.jsx";
 import styles from "./Filter.module.css";
+import Moment from "react-moment";
+import moment from "moment";
 
 export default function Filter({ MemberList = [] }) {
   const [query, setQuery] = useState("");
@@ -10,14 +12,28 @@ export default function Filter({ MemberList = [] }) {
   const [reRender, setReRender] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
+  const dateParameters = [
+    { base: "join_date", before: "join_date_before", after: "join_date_after" },
+    { base: "xdate", before: "xdate_before", after: "xdate_after" },
+  ];
+
+  const removeKey = (key) => {
+    setStateParameters((current) => {
+      // 👇️ Remove the key from an object
+      const { [key]: _, ...rest } = current;
+
+      return rest;
+    });
+  };
+
   const toggleVisibility = () => {
     setIsVisible((prev) => !prev);
   };
 
   const filteredMembers = MemberList.filter((member) => {
     const fields = member.fields;
-    //console.log(member);
-    const numOfParams = Object.keys(stateParameters).length;
+    let localParameters = { ...stateParameters }; //cloning parameters so we can switch things up when we come to dates
+    const numOfParams = Object.keys(localParameters).length;
     if (!numOfParams && query !== "") {
       //this is our simple query, w/o params logic
       //console.log("queryParameters length 0");
@@ -36,10 +52,23 @@ export default function Filter({ MemberList = [] }) {
     } //end of 'naive' search w/o terms
     //if our user used parameters
     else if (numOfParams > 0) {
-      for (const key of Object.keys(stateParameters)) {
+      //checking if we're searching with dates
+      //since date fields have different names from our member.fields, we need to handle them
+      //so in the later for loop it doesn't attempt to compare non-existent fields and crash out
+      const hasDateFields = dateParameters.some(
+        ({ before, after }) =>
+          before in localParameters || after in localParameters
+      );
+      //if we have date fields but handleDates is false this member isn't returned
+      //handleDates also removes our date parameters from our localParameters object
+      //(if it's true we just continue comparing the remaining parameters in the upcoming for loop)
+      if (hasDateFields && !handleDates(fields, localParameters)) {
+        return false;
+      }
+      for (const key of Object.keys(localParameters)) {
         //console.log(Object.keys(stateParameters).length);
         //console.log(`Checking ${key}: searching for '${fields[key]}'`);
-        const searchTerm = stateParameters[key];
+        const searchTerm = localParameters[key];
         const memberTerm =
           fields[key] !== null ? fields[key].toString().toLowerCase() : ""; //ternary to make sure we don't call toString on null/undefined
         console.log(
@@ -52,6 +81,33 @@ export default function Filter({ MemberList = [] }) {
       return true;
     }
   });
+
+  function handleDates(fields, localParameters) {
+    let match = true;
+    for (const { base, before, after } of dateParameters) {
+      const hasBefore = localParameters[before];
+      const hasAfter = localParameters[after];
+      if (hasBefore && hasAfter) {
+        //ergo, we know the user wants to filter for members that fall inbetween two dates
+        match =
+          match &&
+          moment(fields[base]).isBetween(
+            localParameters[after],
+            localParameters[before]
+          );
+      } else if (hasBefore) {
+        match = match && moment(fields[base]).isBefore(localParameters[before]);
+      } else if (hasAfter) {
+        match = match && moment(fields[base]).isAfter(localParameters[after]);
+      }
+
+      //deleting the keys so our filteredMembers method doesn't try to retrieve their values from member.fields
+      if (hasBefore) delete localParameters[before];
+      if (hasAfter) delete localParameters[after];
+    }
+
+    return match;
+  }
 
   return (
     <div className={styles.fullPage}>
@@ -68,12 +124,10 @@ export default function Filter({ MemberList = [] }) {
         </a>
       </header>
       <div className={styles.content}>
-        <aside className={styles.filterSideBar}>
-          <AdvancedFilter
-            setStateParameters={setStateParameters}
-            isVisible={isVisible}
-          />
-        </aside>
+        <AdvancedFilter
+          setStateParameters={setStateParameters}
+          isVisible={isVisible}
+        />
         <main className={styles.membersList} key={reRender}>
           {filteredMembers.length > 0 ? (
             filteredMembers.map((member) => (

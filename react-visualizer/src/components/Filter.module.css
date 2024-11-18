@@ -20,7 +20,7 @@
   cursor: pointer;
 }
 
-.filterSideBar form div {
+.filterSideBar form > div {
   padding: 5px 6px 5px 5px;
   border-bottom: 1px dashed #323232;
 }
