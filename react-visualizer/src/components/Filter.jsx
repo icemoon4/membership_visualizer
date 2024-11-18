@@ -36,7 +36,6 @@ export default function Filter({ MemberList = [] }) {
     const numOfParams = Object.keys(localParameters).length;
     if (!numOfParams && query !== "") {
       //this is our simple query, w/o params logic
-      //console.log("queryParameters length 0");
       for (const key in fields) {
         const value = fields[key];
         if (

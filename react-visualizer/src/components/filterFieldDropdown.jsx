@@ -10,6 +10,7 @@ export default function filterFieldDropdown({
       name.charAt(0).toUpperCase() + name.slice(1).replaceAll("_", " ") + ": "
     );
   }
+
   return (
     <div className={styles.filterField}>
       <label>{`${clean(name)}`}</label>
