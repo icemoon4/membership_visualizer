@@ -3,13 +3,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MembersList from "./components/MembersList";
 import PageNotFound from "./components/PageNotFound";
 import MembersStats from "./components/MembersStats";
-import Nav from "./components/Nav";
 import Login from "./components/Login";
 import styles from "./app.module.css";
 function App() {
   return (
     <BrowserRouter>
-      <Nav />
       <Routes>
         <Route path="/" element={<MembersList />} />
         <Route path="/statistics" element={<MembersStats />}></Route>
