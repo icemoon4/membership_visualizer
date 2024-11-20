@@ -1,0 +1,9 @@
+.logoHeader {
+  display: flex;
+  align-items: center;
+}
+
+.logoHeader img {
+  max-height: 100%;
+  max-width: auto;
+}

@@ -1,5 +1,6 @@
 import stylesLogin from "./Login.module.css";
 import styles from "../App.module.css";
+import LogoHeader from "./LogoHeader";
 
 export default function Login() {
   //in the future: this url here: https://medium.com/@preciousimoniakemu/create-a-react-login-page-that-authenticates-with-django-auth-token-8de489d2f751
@@ -8,13 +9,9 @@ export default function Login() {
     return "lol";
   }
   return (
-    <div className={stylesLogin.loginPage}>
+    <main className={stylesLogin.loginPage}>
       <div className={stylesLogin.loginContainer}>
-        <h2>
-          DSA <br />
-          Worcester
-          <br />
-        </h2>
+        <LogoHeader />
         <label for="username">Username: </label>
         <input
           //value={queryParameters.current.get({ name }) || ""}
@@ -29,6 +26,6 @@ export default function Login() {
         />
         <button className={styles.redButton}>Log in</button>
       </div>
-    </div>
+    </main>
   );
 }

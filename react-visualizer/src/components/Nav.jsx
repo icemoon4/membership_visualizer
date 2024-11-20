@@ -1,10 +1,16 @@
 import { Link } from "react-router-dom";
+import LogoHeader from "./LogoHeader";
+import styles from "./nav.module.css";
 
 export default function Nav() {
   return (
-    <div>
-      <Link to="/">Search</Link>
-      <Link to="/Statistics">Statistics</Link>
+    <div className={styles.navBar}>
+      <LogoHeader />
+      <div className={styles.pageOptions}>
+        <Link to="/">Search</Link>
+        <Link to="/Statistics">Statistics</Link>
+        <Link to="/Login">Log out</Link>
+      </div>
     </div>
   );
 }

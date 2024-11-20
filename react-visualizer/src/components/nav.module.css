@@ -1,0 +1,42 @@
+.navBar {
+  background-color: var(--dark-dsa-red);
+  padding: 5px;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("src\\assets\\Poppins-Regular.ttf") format("truetype");
+}
+
+.navBar a {
+  color: white;
+  transition: 0.15s;
+  text-decoration: none;
+  padding: 0px 15px;
+  font-family: "Poppins";
+}
+
+.pageOptions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navBar header {
+  height: 50px;
+}
+
+.navBar h2 {
+  color: white;
+  font-size: 100%;
+  margin-left: 0.5rem;
+  font-family: "Poppins";
+}
+
+.navBar img {
+  height: auto;
+}
+
+.navBar a:hover {
+  color: var(--dsa-red);
+}
