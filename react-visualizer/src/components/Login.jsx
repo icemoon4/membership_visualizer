@@ -1,3 +1,34 @@
+import stylesLogin from "./Login.module.css";
+import styles from "../App.module.css";
+
 export default function Login() {
-  return <div>Login</div>;
+  //in the future: this url here: https://medium.com/@preciousimoniakemu/create-a-react-login-page-that-authenticates-with-django-auth-token-8de489d2f751
+  //I think this should take the branch name as a parameter a put it in the header
+  function sendQuery(e) {
+    return "lol";
+  }
+  return (
+    <div className={stylesLogin.loginPage}>
+      <div className={stylesLogin.loginContainer}>
+        <h2>
+          DSA <br />
+          Worcester
+          <br />
+        </h2>
+        <label for="username">Username: </label>
+        <input
+          //value={queryParameters.current.get({ name }) || ""}
+          type="text"
+          onChange={(e) => sendQuery(e.target.value)}
+        />
+        <label for="password">Password: </label>
+        <input
+          //value={queryParameters.current.get({ name }) || ""}
+          type="text"
+          onChange={(e) => sendQuery(e.target.value)}
+        />
+        <button className={styles.redButton}>Log in</button>
+      </div>
+    </div>
+  );
 }

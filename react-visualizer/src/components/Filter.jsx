@@ -70,9 +70,7 @@ export default function Filter({ MemberList = [] }) {
         const searchTerm = localParameters[key];
         const memberTerm =
           fields[key] !== null ? fields[key].toString().toLowerCase() : ""; //ternary to make sure we don't call toString on null/undefined
-        console.log(
-          `Checking ${key}: searching for '${searchTerm}' in '${memberTerm}'`
-        );
+        //console.log(`Checking ${key}: searching for '${searchTerm}' in '${memberTerm}'`);
         if (!memberTerm.includes(searchTerm)) {
           return false; //not our guy
         }
