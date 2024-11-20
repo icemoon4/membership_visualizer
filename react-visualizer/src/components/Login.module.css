@@ -1,0 +1,29 @@
+body {
+}
+
+#root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loginPage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.loginContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border: 1px solid var(--dsa-red);
+  padding: 25px;
+  width: 25rem;
+}
+
+button {
+  margin-top: 10px;
+}
