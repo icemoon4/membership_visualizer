@@ -10,7 +10,7 @@ export default function Login() {
   }
   return (
     <main className={stylesLogin.loginPage}>
-      <div className={stylesLogin.loginContainer}>
+      <form className={stylesLogin.loginContainer}>
         <LogoHeader />
         <label for="username">Username: </label>
         <input
@@ -25,7 +25,7 @@ export default function Login() {
           onChange={(e) => sendQuery(e.target.value)}
         />
         <button className={styles.redButton}>Log in</button>
-      </div>
+      </form>
     </main>
   );
 }

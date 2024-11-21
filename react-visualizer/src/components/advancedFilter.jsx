@@ -8,6 +8,7 @@ import mainStyles from "../app.module.css";
 
 export default function advancedFilter({ setStateParameters, isVisible }) {
   const [currentParameters, setCurrentParameters] = useState({});
+  const [resetDates, setResetDates] = useState(false);
 
   const allSearchableFields = [
     "first_name",
@@ -65,7 +66,6 @@ export default function advancedFilter({ setStateParameters, isVisible }) {
   const boolFields = [
     "do_not_call",
     "union_member",
-    "student_yes_no",
     "new_member_past_month",
     "vaccinated",
     "do_not_text",
@@ -147,6 +147,7 @@ export default function advancedFilter({ setStateParameters, isVisible }) {
       ...prevParams,
       [key]: value,
     }));
+    console.log(currentParameters);
   }
 
   function handleSubmit(e) {
@@ -158,6 +159,7 @@ export default function advancedFilter({ setStateParameters, isVisible }) {
     document.querySelector("#advancedFilterForm").reset();
     setCurrentParameters({});
     setStateParameters({});
+    setResetDates((prev) => !prev);
   }
 
   return (
@@ -176,22 +178,32 @@ export default function advancedFilter({ setStateParameters, isVisible }) {
                 setQuery={setQuery}
               />
             ) : boolFields.includes(field) ? (
-              <FilterFieldBool
+              <FilterFieldDropdown
                 name={field}
                 key={`component_${field}`}
+                selectOptions={["", "True", "False"]}
                 setQuery={setQuery}
               />
             ) : dateFields.includes(field) ? (
               <FilterFieldDatepicker
                 name={field}
-                key={`component_${field}`}
+                key={`component_${field}_${resetDates}`}
                 setQuery={setQuery}
+                resetDates={resetDates}
+                setResetDates={setResetDates}
               />
             ) : field === "membership_status" ? (
               <FilterFieldDropdown
                 name={field}
                 key={`component_${field}`}
                 selectOptions={membershipFields}
+                setQuery={setQuery}
+              />
+            ) : field === "student_yes_no" ? (
+              <FilterFieldDropdown
+                name={field}
+                key={`component_${field}`}
+                selectOptions={["", "Yes", "No"]}
                 setQuery={setQuery}
               />
             ) : field === "mailing_pref" ? (
