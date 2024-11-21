@@ -8,6 +8,16 @@
   --button-dark: #241f20;
 }
 
+@font-face {
+  font-family: "Poppins";
+  src: url("src\\assets\\Poppins-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "PoppinsBold";
+  src: url("src\\assets\\Poppins-Bold.ttf") format("truetype");
+}
+
 body {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-color: var(--background);

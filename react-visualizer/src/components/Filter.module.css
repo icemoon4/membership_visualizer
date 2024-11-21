@@ -14,7 +14,12 @@
   margin-top: 25px;
 }
 
-.datePicker {
+.inactive {
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.active {
+  color: unset !important;
 }
 
 .buttonsContainer {
