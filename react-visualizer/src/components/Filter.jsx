@@ -17,15 +17,6 @@ export default function Filter({ MemberList = [] }) {
     { base: "xdate", before: "xdate_before", after: "xdate_after" },
   ];
 
-  const removeKey = (key) => {
-    setStateParameters((current) => {
-      // 👇️ Remove the key from an object
-      const { [key]: _, ...rest } = current;
-
-      return rest;
-    });
-  };
-
   const toggleVisibility = () => {
     setIsVisible((prev) => !prev);
   };
@@ -64,6 +55,12 @@ export default function Filter({ MemberList = [] }) {
       if (hasDateFields && !handleDates(fields, localParameters)) {
         return false;
       }
+      if (
+        localParameters["address1"] &&
+        !handleAddress(fields, localParameters)
+      ) {
+        return false;
+      }
       for (const key of Object.keys(localParameters)) {
         //console.log(Object.keys(stateParameters).length);
         //console.log(`Checking ${key}: searching for '${fields[key]}'`);
@@ -78,6 +75,18 @@ export default function Filter({ MemberList = [] }) {
       return true;
     }
   });
+
+  //advanced search only has 1 address field whereas member has 2, 
+  //so we want to use it to look for matches in both
+  function handleAddress(fields, localParameters) {
+    if (
+      fields["address1"].includes(localParameters["address1"]) ||
+      fields["address2"].includes(localParameters["address1"])
+    ) {
+      return true;
+    }
+    return false;
+  }
 
   function handleDates(fields, localParameters) {
     let match = true;

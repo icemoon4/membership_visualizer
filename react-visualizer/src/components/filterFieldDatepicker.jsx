@@ -9,7 +9,6 @@ export default function filterFieldDatepicker({ name, setQuery }) {
   const [textVisible, setVisibility] = useState(false);
 
   function clean(name) {
-    console.log(`cleaning ${name}`);
     if (name === "xdate_before") {
       return "Membership expires before: ";
     } else if (name == "xdate_after") {
@@ -22,9 +21,9 @@ export default function filterFieldDatepicker({ name, setQuery }) {
   }
 
   function newSetQuery(name, date) {
-    console.log(`setting ${name} and ${date}`);
     setStartDate(date);
     setQuery(name, date);
+    setVisibility(true);
   }
 
   function toggleVisibility() {
@@ -32,10 +31,10 @@ export default function filterFieldDatepicker({ name, setQuery }) {
   }
 
   return (
-    <div onClick={toggleVisibility}>
+    <div>
       <label>{`${clean(name)}`}</label>
       <DatePicker
-        className={textVisible ? "active-datepicker" : "inactive-datepicker"}
+        className={textVisible ? styles.active : styles.inactive}
         selected={startDate}
         onChange={(date) => newSetQuery(name, date)}
       />

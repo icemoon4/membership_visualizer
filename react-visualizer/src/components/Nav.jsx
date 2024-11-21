@@ -4,13 +4,13 @@ import styles from "./nav.module.css";
 
 export default function Nav() {
   return (
-    <div className={styles.navBar}>
+    <nav className={styles.navBar}>
       <LogoHeader />
       <div className={styles.pageOptions}>
         <Link to="/">Search</Link>
         <Link to="/Statistics">Statistics</Link>
         <Link to="/Login">Log out</Link>
       </div>
-    </div>
+    </nav>
   );
 }
