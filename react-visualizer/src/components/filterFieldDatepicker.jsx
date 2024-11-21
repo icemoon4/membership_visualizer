@@ -1,10 +1,14 @@
 import DatePicker from "react-datepicker";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from "./Filter.module.css";
-import stylesDatepicker from "./filterFieldDatepicker.css?inline";
 
-export default function filterFieldDatepicker({ name, setQuery }) {
+export default function filterFieldDatepicker({
+  name,
+  setQuery,
+  resetDates,
+  setResetDates,
+}) {
   const [startDate, setStartDate] = useState(new Date());
   const [textVisible, setVisibility] = useState(false);
 
@@ -17,6 +21,10 @@ export default function filterFieldDatepicker({ name, setQuery }) {
       return "Joined after: ";
     } else if (name === "join_date_before") {
       return "Joined before: ";
+    } else {
+      return (
+        name.charAt(0).toUpperCase() + name.slice(1).replaceAll("_", " ") + ": "
+      );
     }
   }
 
@@ -26,9 +34,10 @@ export default function filterFieldDatepicker({ name, setQuery }) {
     setVisibility(true);
   }
 
-  function toggleVisibility() {
-    setVisibility(true);
-  }
+  useEffect(() => {
+    setStartDate(new Date());
+    setVisibility(false);
+  }, [resetDates]);
 
   return (
     <div>
