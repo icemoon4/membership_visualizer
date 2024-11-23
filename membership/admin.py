@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from membership.models import Committee, Event, EventAttendance, Member, Race, Region
+from membership.models import (Committee, Event, EventAttendance, Member,
+                               MembershipCount, Race, Region)
 
 
 # Register your models here.
@@ -28,9 +29,14 @@ class EventAttendanceAdmin(admin.ModelAdmin):
     list_display = ["member", "event", "rsvp_status", "status"]
 
 
+class MembershipCountAdmin(admin.ModelAdmin):
+    list_display = ["list_date", "constitutional_members", "members_in_good_standing"]
+
+
 admin.site.register(Member, MemberAdmin)
 admin.site.register(Committee, CommitteeAdmin)
 admin.site.register(Event, EventAdmin)
 admin.site.register(EventAttendance, EventAttendanceAdmin)
 admin.site.register(Race, RaceAdmin)
 admin.site.register(Region, RegionAdmin)
+admin.site.register(MembershipCount, MembershipCountAdmin)

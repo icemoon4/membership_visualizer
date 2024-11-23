@@ -1,6 +1,5 @@
-from datetime import datetime
-
 from rest_framework import serializers
+from simple_history.utils import bulk_update_with_history
 
 from membership.models import Member
 
@@ -16,6 +15,7 @@ class MemberSerializer(serializers.ModelSerializer):
             "do_not_call",
             "p2ptext_optout",
             "best_phone",
+            "mobile_phone",
             "home_phone",
             "work_phone",
             "join_date",
@@ -47,6 +47,7 @@ class MemberSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
+        print("create")
         m2m_data = validated_data.pop("race")
         instance = Member.objects.create(**validated_data)
 
@@ -62,13 +63,6 @@ class MemberSerializer(serializers.ModelSerializer):
 
         return value
 
-    # def date_str_validator(self, value):
-    #     print(value)
-    #     if isinstance(value, str):
-    #         value = datetime.strptime(value, "%-m/%-d/%Y")
-
-    #     return value
-
     def validate_do_not_call(self, value):
         return self.bool_str_validator(value)
 
@@ -76,10 +70,12 @@ class MemberSerializer(serializers.ModelSerializer):
         return self.bool_str_validator(value)
 
     def update(self, instance, validated_data):
-        # todo: implement this
+        print("update")
+        m2m_data = validated_data.pop("race")
+        members = Member.objects.filter(actionkit_id=validated_data.get("actionkit_id"))
+        members.update(**validated_data)
+        members.first().save()  # there's only one record, doing this so it saves the history
+
+        for item in m2m_data:
+            instance.race.add(item)
         return instance
-
-
-# {'best_phone': [ErrorDetail(string='This field may not be blank.', code='blank')]}
-# {'home_phone': [ErrorDetail(string='Ensure this field has no more than 10 characters.', code='max_length')]}
-# {'monthly_dues_status': [ErrorDetail(string='"manual" is not a valid choice.', code='invalid_choice')]}
