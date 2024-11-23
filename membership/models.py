@@ -1,4 +1,5 @@
 from django.db import models
+from simple_history.models import HistoricalRecords
 
 MEMBERSHIP_TYPES = (
     ("one-time", "One-time"),
@@ -8,11 +9,15 @@ MEMBERSHIP_TYPES = (
 )
 DUES_STATUSES = (
     ("never", "Never"),
+    ("2mo_plus_failed", "2 Months Plus Failed"),
+    ("lapsed", "Lapsed"),
     ("active", "Active"),
     ("manual", "Manual"),
+    ("past_due", "Past Due"),
     ("canceled_by_failure", "Canceled by Failure"),
     ("canceled_by_admin", "Canceled by Admin"),
     ("canceled_by_processor", "Canceled by Processor"),
+    ("canceled_by_user", "Canceled by User"),
 )
 MEMBERSHIP_STATUSES = (
     ("Lapsed", "Lapsed"),
@@ -22,7 +27,10 @@ MEMBERSHIP_STATUSES = (
 MEMBERSHIP_LETTERS = (("L", "L"), ("M", "M"))
 UNION_CHOICES = (
     ("Yes, current union member", "Yes, current union member"),
+    ("Yes, retired union member", "Yes, retired union member"),
     ("No, not a union member", "No, not a union member"),
+    ("No, but former union member", "No, but former union member"),
+    ("Currently organizing my workplace", "Currently organizing my workplace"),
 )
 STUDENT_CHOICES = (
     ("Yes, college student", "Yes, college student"),
@@ -85,7 +93,6 @@ EVENT_RSVP_CHOICES = (
 # )
 
 
-# Create your models here.
 class Member(models.Model):
     first_name = models.CharField(max_length=255)
     middle_name = models.CharField(max_length=255, blank=True, null=True)
@@ -153,6 +160,7 @@ class Member(models.Model):
     in_chapter = models.BooleanField(
         default=True
     )  # If member is removed from membership list, set to False
+    history = HistoricalRecords()
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -219,3 +227,20 @@ class Region(models.Model):
 
     def __str__(self):
         return f"{self.label}"
+
+
+class MembershipCount(models.Model):
+    list_date = models.DateField(unique=True)
+    notes = models.TextField(blank=True, null=True)
+    constitutional_members = models.IntegerField()
+    members_in_good_standing = models.IntegerField()
+    active_income_based = models.IntegerField()
+    active_monthly = models.IntegerField()
+    active_yearly = models.IntegerField()
+    active_other = models.IntegerField()
+    members = models.IntegerField()
+    lapsed_expired = models.IntegerField()
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return self.list_date.strftime("%b %d, %Y")

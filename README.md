@@ -44,3 +44,18 @@ GRANT ALL PRIVILEGES ON DATABASE membership_test TO admin;
 * Upload the file `example membership list.csv`, click save
 * You should see some logs in your terminal if it's working. Also if it's not working it does that too
 * Go to the Member page, confirm that the members from the list were added
+
+## Defining some DSA terms
+### Columns in the membership list:
+* List Date: Date that the list was generated from National's database
+* xdate: Expiry date of someone's membership
+* actionkit_id: ID of the member in National's database (they use ActionKit)
+
+### Membership terms
+* MIGS (Member in Good Standing): Someone who has paid dues sometime within the last year
+* Active (income-based/monthly/yearly) MIGS: These are the 3 most common ways an active member will choose to make payments
+* Active (other) MIGS: Members can also be in good standing if they made a one-time payment or pay manually by check, these types are less common and these people tend not to participate in the chapter, so we care less about tracking them individually
+* Member: Can mean a couple things. Depending on context, we may just be referring to a member of any status within the chapter. In terms of data, Member means someone who has not made a dues payment in the last year, but did make a dues payment sometime in the last two years
+* Lapsed: Someone who has not made a payment in the last two years
+* Expired: Same as lapsed, but National changed the wording from Expired to Lapsed in November 2021
+* Constitutional member: Someone who is either a MIGS or a Member

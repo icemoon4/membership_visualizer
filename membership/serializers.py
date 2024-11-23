@@ -1,6 +1,5 @@
-from datetime import datetime
-
 from rest_framework import serializers
+from simple_history.utils import bulk_update_with_history
 
 from membership.models import Member
 
@@ -73,8 +72,10 @@ class MemberSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         print("update")
         m2m_data = validated_data.pop("race")
-        Member.objects.filter(actionkit_id=validated_data.get("actionkit_id")).update(**validated_data)
-        
+        members = Member.objects.filter(actionkit_id=validated_data.get("actionkit_id"))
+        members.update(**validated_data)
+        members.first().save()  # there's only one record, doing this so it saves the history
+
         for item in m2m_data:
             instance.race.add(item)
         return instance
