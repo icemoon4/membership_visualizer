@@ -1,0 +1,14 @@
+.logoHeader {
+  display: flex;
+  align-items: center;
+}
+
+.logoHeader h2 {
+  /* font-family: "PoppinsBold"; */
+  line-height: 100%;
+}
+
+.logoHeader img {
+  max-height: 100%;
+  max-width: auto;
+}

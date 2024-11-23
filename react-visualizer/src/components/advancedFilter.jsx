@@ -3,10 +3,12 @@ import React, { useState, useRef } from "react";
 import FilterFieldString from "./filterFieldString.jsx";
 import FilterFieldBool from "./filterFieldBool.jsx";
 import FilterFieldDropdown from "./filterFieldDropdown.jsx";
+import FilterFieldDatepicker from "./filterFieldDatepicker.jsx";
 import mainStyles from "../app.module.css";
 
 export default function advancedFilter({ setStateParameters, isVisible }) {
   const [currentParameters, setCurrentParameters] = useState({});
+  const [resetDates, setResetDates] = useState(false);
 
   const allSearchableFields = [
     "first_name",
@@ -14,8 +16,11 @@ export default function advancedFilter({ setStateParameters, isVisible }) {
     "email",
     "do_not_call",
     "best_phone",
-    "join_date",
-    "xdate",
+    //"join_date",
+    "join_date_after",
+    "join_date_before",
+    "xdate_after",
+    "xdate_before",
     "membership_status",
     "union_member",
     "union_name",
@@ -27,7 +32,6 @@ export default function advancedFilter({ setStateParameters, isVisible }) {
     "state",
     "zip",
     "new_member_past_month",
-    "list_date",
     "discord_name",
     "discord_status",
     "vaccinated",
@@ -41,24 +45,27 @@ export default function advancedFilter({ setStateParameters, isVisible }) {
     "last_name",
     "email",
     "best_phone",
-    "join_date",
-    "xdate",
+
     "union_name",
     "student_school_name",
     "address1",
     "city",
     "zip",
-    "list_date",
+
     "discord_name",
     "discord_status",
   ];
 
-  const dropdownFields = ["", "membership_status", "mailing_pref", "state"];
+  const dateFields = [
+    "join_date_before",
+    "join_date_after",
+    "xdate_before",
+    "xdate_after",
+  ];
 
   const boolFields = [
     "do_not_call",
     "union_member",
-    "student_yes_no",
     "new_member_past_month",
     "vaccinated",
     "do_not_text",
@@ -132,7 +139,6 @@ export default function advancedFilter({ setStateParameters, isVisible }) {
   const membershipFields = ["", "Member", "Member in Good Standing", "Lapsed"];
 
   function setQuery(key, value) {
-    console.log("is this getting called");
     value = value.toString().toLowerCase();
     if (key === "union_member") {
       value = value === "true" ? "yes" : "no";
@@ -141,11 +147,11 @@ export default function advancedFilter({ setStateParameters, isVisible }) {
       ...prevParams,
       [key]: value,
     }));
+    console.log(currentParameters);
   }
 
   function handleSubmit(e) {
     e.preventDefault();
-    console.log("heyyyy helpppp", currentParameters);
     setStateParameters(currentParameters);
   }
 
@@ -153,10 +159,11 @@ export default function advancedFilter({ setStateParameters, isVisible }) {
     document.querySelector("#advancedFilterForm").reset();
     setCurrentParameters({});
     setStateParameters({});
+    setResetDates((prev) => !prev);
   }
 
   return (
-    <div id="advancedFilterComponent">
+    <aside className={styles.filterSideBar}>
       {isVisible && (
         <form
           id="advancedFilterForm"
@@ -171,16 +178,32 @@ export default function advancedFilter({ setStateParameters, isVisible }) {
                 setQuery={setQuery}
               />
             ) : boolFields.includes(field) ? (
-              <FilterFieldBool
+              <FilterFieldDropdown
                 name={field}
                 key={`component_${field}`}
+                selectOptions={["", "True", "False"]}
                 setQuery={setQuery}
+              />
+            ) : dateFields.includes(field) ? (
+              <FilterFieldDatepicker
+                name={field}
+                key={`component_${field}_${resetDates}`}
+                setQuery={setQuery}
+                resetDates={resetDates}
+                setResetDates={setResetDates}
               />
             ) : field === "membership_status" ? (
               <FilterFieldDropdown
                 name={field}
                 key={`component_${field}`}
                 selectOptions={membershipFields}
+                setQuery={setQuery}
+              />
+            ) : field === "student_yes_no" ? (
+              <FilterFieldDropdown
+                name={field}
+                key={`component_${field}`}
+                selectOptions={["", "Yes", "No"]}
                 setQuery={setQuery}
               />
             ) : field === "mailing_pref" ? (
@@ -201,14 +224,16 @@ export default function advancedFilter({ setStateParameters, isVisible }) {
               console.log("unrecognized field; how'd you manage this?")
             )
           )}
-          <button onClick={handleSubmit} className={mainStyles.redButton}>
-            Search
-          </button>
-          <button onClick={clearFilters} className={mainStyles.whiteButton}>
-            Clear filters
-          </button>
+          <div className={styles.buttonsContainer}>
+            <button onClick={handleSubmit} className={mainStyles.redButton}>
+              Search
+            </button>
+            <button onClick={clearFilters} className={mainStyles.whiteButton}>
+              Clear filters
+            </button>
+          </div>
         </form>
       )}
-    </div>
+    </aside>
   );
 }

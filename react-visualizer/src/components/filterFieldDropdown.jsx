@@ -6,10 +6,13 @@ export default function filterFieldDropdown({
   setQuery,
 }) {
   function clean(name) {
-    return (
-      name.charAt(0).toUpperCase() + name.slice(1).replaceAll("_", " ") + ": "
-    );
+    return name === "student_yes_no"
+      ? "Student?: "
+      : name.charAt(0).toUpperCase() +
+          name.slice(1).replaceAll("_", " ") +
+          ": ";
   }
+
   return (
     <div className={styles.filterField}>
       <label>{`${clean(name)}`}</label>

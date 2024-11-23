@@ -14,13 +14,26 @@
   margin-top: 25px;
 }
 
+.inactive {
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.active {
+  color: unset !important;
+}
+
+.buttonsContainer {
+  display: flex;
+  justify-content: space-around;
+}
+
 .toggleAdvancedSearch {
   text-decoration: solid;
   margin: 0 auto;
   cursor: pointer;
 }
 
-.filterSideBar form div {
+.filterSideBar form > div {
   padding: 5px 6px 5px 5px;
   border-bottom: 1px dashed #323232;
 }
