@@ -52,6 +52,11 @@ class MembershipFile(models.Model):
             constitutional = (
                 migs
             ) = income_based = monthly = yearly = other = members = lapsed = 0
+            
+            latest_list_date = Member.objects.order_by("-list_date").first()
+            if latest_list_date:
+                latest_list_date = latest_list_date.list_date
+            
             for row in csv_data:
                 print(row)
                 ak_id = row.get("actionkit_id")
@@ -61,7 +66,6 @@ class MembershipFile(models.Model):
                 row["race"] = clean_m2m_list(row.get("race", ""), Race)
 
                 existing = Member.objects.filter(actionkit_id=ak_id).first()
-                print(existing)
                 if existing:
                     serializer = MemberSerializer(existing, data=row)
                 else:
@@ -69,13 +73,14 @@ class MembershipFile(models.Model):
                 try:
                     with transaction.atomic():
                         serializer.is_valid(raise_exception=True)  # rollback on error
+                        if not list_date:
+                            list_date = serializer.validated_data.get("list_date")
+                        if latest_list_date and list_date <= latest_list_date:
+                            raise Exception("List Date must be newer than the latest list")
                         serializer.save()
                         ids.append(ak_id)
                 except Exception as e:
-                    print(e)
-
-                if not list_date:
-                    list_date = serializer.validated_data.get("list_date")
+                    raise Exception(e)
 
                 memb_status = serializer.validated_data.get(
                     "membership_status", ""
