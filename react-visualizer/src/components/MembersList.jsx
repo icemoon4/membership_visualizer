@@ -1,5 +1,5 @@
-import { MembersContext } from "./FilterMembersPage/MembersContext";
-import Filter from "./FilterMembersPage/Filter";
+import { MembersContext } from "./MembersContext";
+import Filter from "./Filter/Filter";
 import Nav from "./Nav";
 import { useState, useContext } from "react";
 
@@ -10,7 +10,6 @@ export default function MembersList() {
   }
   return (
     <div className="MembersList">
-      <Nav />
       <Filter MemberList={members} />
     </div>
   );

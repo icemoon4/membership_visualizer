@@ -14,13 +14,11 @@ export default function Login() {
         <LogoHeader />
         <label for="username">Username: </label>
         <input
-          //value={queryParameters.current.get({ name }) || ""}
           type="text"
           onChange={(e) => sendQuery(e.target.value)}
         />
         <label for="password">Password: </label>
         <input
-          //value={queryParameters.current.get({ name }) || ""}
           type="text"
           onChange={(e) => sendQuery(e.target.value)}
         />
