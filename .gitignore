@@ -26,6 +26,9 @@ dist-ssr
 *.sln
 *.sw?
 
+#BAT files
+*.bat
+
 
 # Byte-compiled / optimized / DLL files
 **/__pycache__/
