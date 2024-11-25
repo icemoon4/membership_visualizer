@@ -6,6 +6,6 @@ export default defineConfig({
     mainFields: [],
   },
   alias: {
-    src: "/src",
+    '@': "/src",
   },
 });
