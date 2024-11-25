@@ -1,18 +1,17 @@
-import FetchMemberList from "./FetchMemberList";
-import Filter from "./Filter";
+import { MembersContext } from "./FilterMembersPage/MembersContext";
+import Filter from "./FilterMembersPage/Filter";
 import Nav from "./Nav";
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 export default function MembersList() {
-  const [MemberList, setMembersList] = useState([]);
+  const { members, isLoading } = useContext(MembersContext);
+  if (isLoading) {
+    return <p>Loading members...</p>;
+  }
   return (
     <div className="MembersList">
       <Nav />
-      <FetchMemberList
-        setMembersList={setMembersList}
-        MemberList={MemberList}
-      />
-      <Filter MemberList={MemberList} />
+      <Filter MemberList={members} />
     </div>
   );
 }

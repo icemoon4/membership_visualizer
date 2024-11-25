@@ -1,12 +1,17 @@
 import styles from "./member.module.css";
+import { Link } from "react-router-dom";
 
-export default function Member({ fields }) {
+export default function Member({ memberId, fields }) {
   return (
     <div className={styles.memberCard}>
-      <div className={styles.memberTitle}>
+      <Link
+        to={`/members/${memberId}`}
+        state={{ memberFields: fields }}
+        className={styles.memberTitle}
+      >
         <span>{fields.first_name} </span> <span>{fields.last_name}</span>{" "}
         <span> - {fields.membership_status}</span>
-      </div>
+      </Link>
       <div>Join date: {fields.join_date}</div>
       <div>Expiry date: {fields.xdate}</div>
       <div>Email: {fields.email}</div>
