@@ -13,7 +13,6 @@ export default function filterFieldString({ name, setQuery }) {
       <label>{`${clean(name)}`}</label>
       <input
         id={`adv_${name}`}
-        //value={queryParameters.current.get({ name }) || ""}
         type="text"
         onChange={(e) => setQuery(name, e.target.value)}
       />

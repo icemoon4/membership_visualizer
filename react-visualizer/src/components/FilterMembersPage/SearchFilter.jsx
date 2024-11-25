@@ -1,5 +1,5 @@
 import styles from "./searchFilter.module.css";
-import mainStyles from "../app.module.css";
+import mainStyles from "../../app.module.css";
 
 export default function SearchFilter({
   setStateParameters,

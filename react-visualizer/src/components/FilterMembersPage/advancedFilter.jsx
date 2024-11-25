@@ -4,7 +4,7 @@ import FilterFieldString from "./filterFieldString.jsx";
 import FilterFieldBool from "./filterFieldBool.jsx";
 import FilterFieldDropdown from "./filterFieldDropdown.jsx";
 import FilterFieldDatepicker from "./filterFieldDatepicker.jsx";
-import mainStyles from "../app.module.css";
+import mainStyles from "../../app.module.css";
 
 export default function advancedFilter({ setStateParameters, isVisible }) {
   const [currentParameters, setCurrentParameters] = useState({});
