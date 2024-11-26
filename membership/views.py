@@ -5,8 +5,8 @@ from django.shortcuts import get_object_or_404, render
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
 
-from membership.models import Member
-from membership.serializers import MemberSerializer
+from membership.models import Member, MembershipCount
+from membership.serializers import MemberSerializer, MembershipCountSerializer
 
 
 # Create your views here.
@@ -21,6 +21,11 @@ def index(request):
 def detail(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
     return render(request, "detail.html", {"member": member})
+
+def detail_json(request, member_id):
+    member = get_object_or_404(Member, pk=member_id)
+    members_serializer = MemberSerializer(member, many=False)
+    return JsonResponse(members_serializer.data, safe=False)
 
 
 def dashboard_with_pivot(request):
@@ -39,14 +44,23 @@ class MemberView(viewsets.ModelViewSet):
     serializer_class = MemberSerializer
     queryset = Member.objects.all()
 
+@api_view(["GET"])
+def membership_counts(request):
+    if request.method == "GET":
+        counts = MembershipCount.objects.all()
+        members_serializer = MembershipCountSerializer(counts, many=True)
+        return JsonResponse(members_serializer.data, safe=False)
+
+
+
 
 @api_view(["GET"])
 def member_list(request):
     if request.method == "GET":
         members = Member.objects.all()
-        name = request.GET.get("first_name")
-        if name:
-            members = members.filter(first_name__icontains=name)
+        id = request.GET.get("actionkit_id")
+        if id:
+            members = members.filter(actionkit_id__icontains=id)
 
         members_serializer = MemberSerializer(members, many=True)
         return JsonResponse(members_serializer.data, safe=False)

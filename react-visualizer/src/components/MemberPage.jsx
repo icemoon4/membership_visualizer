@@ -16,14 +16,13 @@ export default function MemberPage() {
     if (memberFromContext) {
       setMember(memberFromContext); // Use context data
     } else {
-      //Fetching from the server if there's no current context (such as being sent the link and starting your session from here)
+      //Fetching from the server if there's no current context (such as starting your session from a member link you were sent)
       async function fetchMemberById() {
         setIsLoading(true);
         try {
-          const res = await fetch(`http://localhost:8000/data/`);
+          const res = await fetch(`http://localhost:8000/${memberId}/data`);
           const data = await res.json();
-          const fetchedMembers = JSON.parse(data);
-          setMember(fetchedMembers.find((m) => m.pk.toString() === memberId)); //find the guy with the passed memberId
+          setMember(JSON.parse(data)); //find the guy with the passed memberId
         } catch (error) {
           console.error("Failed to fetch member data", error);
         } finally {
