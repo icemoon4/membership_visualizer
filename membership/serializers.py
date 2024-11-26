@@ -5,6 +5,10 @@ from membership.models import Member
 
 
 class MemberSerializer(serializers.ModelSerializer):
+    """
+    Serializer to handle weekly member CSV's
+    """
+
     class Meta:
         model = Member
         fields = (

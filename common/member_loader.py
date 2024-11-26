@@ -23,6 +23,9 @@ def validate_and_get_file_rows(file):
 
 
 def clean_bool(value) -> bool:
+    """
+    Accepts a String or a Null and converts to a Bool
+    """
     if not value:
         value = False
     if isinstance(value, str):
@@ -32,7 +35,10 @@ def clean_bool(value) -> bool:
 
 
 def clean_m2m_list(value: str, model: models.Model) -> list:
-    """This just cleans a list for M2M fields where the obj uses the label field. In my case that's all of them. Yay :)"""
+    """
+    This just cleans a list for M2M fields where the obj uses the label field.
+    In my case that's all of them. Yay :)
+    """
     value = [v.strip() for v in value.split(",")]
     model_pks = []
     for v in value:
@@ -45,6 +51,10 @@ def clean_m2m_list(value: str, model: models.Model) -> list:
 
 
 class MemberImporter:
+    """
+    Processes data from a member CSV file
+    """
+
     def __init__(self, file=None):
         self._file = file
         self.bool_fields = (
@@ -67,9 +77,16 @@ class MemberImporter:
         self.list_date = None
 
     def read_csv(self):
+        """
+        Returns a list (rows) of dicts (cells) from the CSV file object
+        :return: list
+        """
         return validate_and_get_file_rows(self._file)
 
     def update_counts(self, data: dict):
+        """
+        Checks membership status and type to calculate various membership metrics
+        """
         memb_status = data.get("membership_status", "").lower()
         memb_type = data.get("membership_type", "").lower()
         monthly_status = data.get("monthly_dues_status", "").lower()
@@ -95,7 +112,11 @@ class MemberImporter:
         elif memb_status in ("lapsed", "expired"):
             self.lapsed += 1
 
-    def clean_and_deserialize_data(self, rows):
+    def clean_and_deserialize_data(self, rows: list):
+        """
+        Given the list of dicts, processes each row and creates or updates a Member from it
+        :return: list of actionkit ids which were included in the membership list
+        """
         ids = []
         for row in rows:
             # Clean data
@@ -135,6 +156,10 @@ class MemberImporter:
         return ids
 
     def process_file(self):
+        """
+        Insertion point from the MembershipFile save() method
+        Deletes any members which are in the DB but were not in the most recent membership list
+        """
         rows = self.read_csv()
         delete_ids = self.clean_and_deserialize_data(rows)
 
@@ -146,6 +171,9 @@ class MemberImporter:
         self.log_counts()
 
     def log_counts(self):
+        """
+        Creates an instance of MembershipCount based on the totals from the CSV
+        """
         existing_count = MembershipCount.objects.filter(
             list_date=self.list_date
         ).first()
