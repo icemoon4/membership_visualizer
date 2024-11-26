@@ -61,7 +61,7 @@ ROOT_URLCONF = "worcdsa.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -140,3 +140,6 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:8081",
     "http://localhost:5173",
 ]
+
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"

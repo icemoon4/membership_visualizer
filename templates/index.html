@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Test page{% endblock %}
+{% block content %}
+{% if user.is_authenticated %}
+Hi {{user.username}}!
+<form action="{% url 'logout' %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Log Out</button>
+</form>
+{% if member_list %}
+    <ul>
+        {% for member in member_list %}
+        <li><a href="{% url 'detail' member.pk %}">{{member.first_name}} {{member.last_name}}</a></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No members are registered.</p>
+{% endif %}
+{% else %}
+<p>You are not logged in</p>
+<a href="{% url 'login' %}">Log In</a>
+{% endif %}
+{% endblock %}

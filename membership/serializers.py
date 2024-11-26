@@ -69,8 +69,8 @@ class MemberSerializer(serializers.ModelSerializer):
 
         return self._process_m2m_data(instance, race)
 
-      
+
 class MembershipCountSerializer(serializers.ModelSerializer):
     class Meta:
         model = MembershipCount  # Specify the model to serialize
-        fields = '__all__'  # Serialize all fields in MembershipCount
+        fields = "__all__"  # Serialize all fields in MembershipCount

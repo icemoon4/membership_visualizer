@@ -1,14 +1,7 @@
 from django.contrib import admin
 
-from membership.models import (
-    Committee,
-    Event,
-    EventAttendance,
-    Member,
-    MembershipCount,
-    Race,
-    Region,
-)
+from membership.models import (Committee, Event, EventAttendance, Member,
+                               MembershipCount, Race, Region)
 
 
 # Register your models here.

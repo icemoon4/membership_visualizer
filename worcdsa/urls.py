@@ -26,5 +26,6 @@ router.register(r"members", views.MemberView, "member")
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("membership.urls")),
+    path("accounts/", include("django.contrib.auth.urls")),
     # path("api/", include(router.urls))
 ]

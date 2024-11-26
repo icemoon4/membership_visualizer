@@ -1,4 +1,5 @@
 # import json
+from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
@@ -18,18 +19,16 @@ def index(request):
     return render(request, "index.html", context)
 
 
+@login_required(login_url="/accounts/login/")
 def detail(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
     return render(request, "detail.html", {"member": member})
+
 
 def detail_json(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
     members_serializer = MemberSerializer(member, many=False)
     return JsonResponse(members_serializer.data, safe=False)
-
-
-def dashboard_with_pivot(request):
-    return render(request, "dashboard_with_pivot.html", {})
 
 
 def pivot_data(request):
@@ -44,14 +43,13 @@ class MemberView(viewsets.ModelViewSet):
     serializer_class = MemberSerializer
     queryset = Member.objects.all()
 
+
 @api_view(["GET"])
 def membership_counts(request):
     if request.method == "GET":
         counts = MembershipCount.objects.all()
         members_serializer = MembershipCountSerializer(counts, many=True)
         return JsonResponse(members_serializer.data, safe=False)
-
-
 
 
 @api_view(["GET"])
