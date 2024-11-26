@@ -3,12 +3,7 @@ import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from "./Filter.module.css";
 
-export default function filterFieldDatepicker({
-  name,
-  setQuery,
-  resetDates,
-  setResetDates,
-}) {
+export default function filterFieldDatepicker({ name, setQuery, resetDates }) {
   const [startDate, setStartDate] = useState(new Date());
   const [textVisible, setVisibility] = useState(false);
 

@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Chart from "./Chart.jsx";
+import styles from "./memberStats.module.css";
+import FilterChartForm from "./FilterChartForm.jsx";
 
 export default function MembersStats() {
   const [membershipCounts, setCounts] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+
   const data = [];
 
   useEffect(() => {
@@ -23,17 +26,23 @@ export default function MembersStats() {
     fetchMembershipCount();
   }, []);
 
-  //rip this up to reflect the move from apexCharts to googleCharts
+  function cleanRow(row) {
+    row.splice(2, 1); //removing the notes section (usually null)
+    row.splice(0, 1); //removing the week id (useless for our purposes)
+    return row;
+  }
+
+ 
+
+  //transforming our json data to fit google charts' data structure
   useEffect(() => {
     if (membershipCounts) {
       let n = Object.keys(membershipCounts[0]);
-      n.splice(2, 1);
-      n.splice(0, 1);
+      n = cleanRow(n);
       data.push(n);
       for (const week of membershipCounts) {
         n = Object.values(week);
-        n.splice(2, 1);
-        n.splice(0, 1);
+        n = cleanRow(n);
         data.push(n);
       }
       console.log(data);
@@ -46,6 +55,22 @@ export default function MembersStats() {
   if (isLoading) {
     return <p>Loading statistics...</p>;
   } else {
-    return <Chart data={data} />;
+    return (
+      <main>
+        <aside className={styles.numbersAside}>
+          <h2>huuu</h2>
+          <div className={styles.chartContainer}>
+            <Chart data={data} type="Table" />
+          </div>
+        </aside>
+        <aside className={styles.chartAside}>
+          <h1>Chart</h1>
+          <FilterChartForm />
+          <div className={styles.chartContainer}>
+            <Chart data={data} type="AreaChart" />
+          </div>
+        </aside>
+      </main>
+    );
   }
 }
