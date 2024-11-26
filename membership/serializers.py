@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from simple_history.utils import bulk_update_with_history
 
-from membership.models import Member
+from membership.models import Member, MembershipCount
 
 
 class MemberSerializer(serializers.ModelSerializer):
@@ -68,3 +68,9 @@ class MemberSerializer(serializers.ModelSerializer):
         members.first().save()  # there's only one record, doing this so it saves the history
 
         return self._process_m2m_data(instance, race)
+
+      
+class MembershipCountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MembershipCount  # Specify the model to serialize
+        fields = '__all__'  # Serialize all fields in MembershipCount

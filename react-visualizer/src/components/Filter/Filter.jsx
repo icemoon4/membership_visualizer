@@ -1,9 +1,8 @@
 import React, { useState, useRef } from "react";
-import Member from "./Member";
+import Member from "../MemberInline.jsx";
 import AdvancedFilter from "./advancedFilter.jsx";
 import SearchFilter from "./SearchFilter.jsx";
 import styles from "./Filter.module.css";
-import Moment from "react-moment";
 import moment from "moment";
 
 export default function Filter({ MemberList = [] }) {
@@ -22,7 +21,7 @@ export default function Filter({ MemberList = [] }) {
   };
 
   const filteredMembers = MemberList.filter((member) => {
-    //console.log(member);
+    console.log(member);
     const fields = member.fields;
     let localParameters = { ...stateParameters }; //cloning parameters so we can switch things up when we come to dates
     const numOfParams = Object.keys(localParameters).length;
@@ -138,7 +137,11 @@ export default function Filter({ MemberList = [] }) {
         <main className={styles.membersList} key={reRender}>
           {filteredMembers.length > 0 ? (
             filteredMembers.map((member) => (
-              <Member key={member.pk} fields={member.fields} />
+              <Member
+                key={member.pk}
+                memberId={member.pk}
+                fields={member.fields}
+              />
             ))
           ) : (
             <li>No results found</li>

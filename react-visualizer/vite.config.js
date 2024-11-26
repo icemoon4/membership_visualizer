@@ -5,4 +5,10 @@ export default defineConfig({
   resolve: {
     mainFields: [],
   },
+  alias: {
+    "@": "/src",
+  },
+  optimizeDeps: {
+    exclude: ["react-google-charts"],
+  },
 });
