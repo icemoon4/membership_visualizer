@@ -1,6 +1,5 @@
-import Nav from "./Nav";
 import React, { useState, useEffect } from "react";
-import { Chart } from "react-google-charts";
+import Chart from "./Chart.jsx";
 
 export default function MembersStats() {
   const [membershipCounts, setCounts] = useState(null);
@@ -27,18 +26,17 @@ export default function MembersStats() {
   //rip this up to reflect the move from apexCharts to googleCharts
   useEffect(() => {
     if (membershipCounts) {
-      const weeklyValues = new Map();
-
-      for (let week of membershipCounts) {
-        for (let key of Object.keys(week)) {
-          if (!weeklyValues.has(key)) {
-            weeklyValues.set(key, [week[key]]);
-          } else {
-            weeklyValues.set(key, [...weeklyValues.get(key), week[key]]);
-          }
-        }
+      let n = Object.keys(membershipCounts[0]);
+      n.splice(2, 1);
+      n.splice(0, 1);
+      data.push(n);
+      for (const week of membershipCounts) {
+        n = Object.values(week);
+        n.splice(2, 1);
+        n.splice(0, 1);
+        data.push(n);
       }
-
+      console.log(data);
     }
   }, [membershipCounts]);
 
@@ -48,15 +46,6 @@ export default function MembersStats() {
   if (isLoading) {
     return <p>Loading statistics...</p>;
   } else {
-    return (
-      <Chart
-        key={isLoading}
-        options={chartOptions.options}
-        series={chartOptions.series}
-        type="pie"
-        width={500}
-        height={320}
-      />
-    );
+    return <Chart data={data} />;
   }
 }

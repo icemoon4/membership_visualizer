@@ -6,6 +6,9 @@ export default defineConfig({
     mainFields: [],
   },
   alias: {
-    '@': "/src",
+    "@": "/src",
+  },
+  optimizeDeps: {
+    exclude: ["react-google-charts"],
   },
 });
