@@ -69,31 +69,14 @@ EVENT_RSVP_CHOICES = (
     ("scheduled", "Scheduled"),
     ("unavailable", "Unavailable"),
 )
-# RACE_CHOICES = (
-#     ("Hispanic / Latinx", "Hispanic / Latinx"),
-#     ("White / of European Descent", "White / of European Descent"),
-#     ("Asian", "Asian"),
-#     ("South Asian", "South Asian"),
-#     ("West Asian / Middle Eastern", "West Asian / Middle Eastern"),
-#     ("Black / of African Descent", "Black / of African Descent"),
-#     ("Jewish", "Jewish"),
-#     ("Native American / Indigenous", "Native American / Indigenous"),
-#     ("Other", "Other"),
-#     ("Prefer Not to Say", "Prefer Not to Say")
-# )
-# REGION_CHOICES = (
-#     ("worcester", "Worcester Area"),
-#     ("south", "South County"),
-#     ("blackstone_valley", "Blackstone Valley"),
-#     ("north", "North Central Mass"),
-#     ("quabbin", "Quabbin and Quaboag"),
-#     ("metrowest", "MetroWest"),
-#     ("nashoba_valley", "Nashoba Valley"),
-#     ("not_in_chapter", "N/A")
-# )
 
 
 class Member(models.Model):
+    """
+    Modeled after the membership list from ActionKit
+    Includes some extra fields which we can assign manually
+    """
+
     first_name = models.CharField(max_length=255)
     middle_name = models.CharField(max_length=255, blank=True, null=True)
     last_name = models.CharField(max_length=255)
@@ -167,6 +150,10 @@ class Member(models.Model):
 
 
 class Committee(models.Model):
+    """
+    Tracks the chapter's committees and who is involved
+    """
+
     committee_name = models.CharField(max_length=255, unique=True)
     agenda_link = models.CharField(max_length=255)
     status = models.CharField(
@@ -191,9 +178,11 @@ class Committee(models.Model):
         return f"{self.committee_name}"
 
 
-class Event(
-    models.Model
-):  # This may include regular meetings like reading group, but I think to start it should be one-time events like a rally
+class Event(models.Model):
+    """
+    List of events that we host
+    """
+
     event_name = models.CharField(max_length=255)
     event_date = models.DateField()
     committee = models.ForeignKey(
@@ -205,6 +194,10 @@ class Event(
 
 
 class EventAttendance(models.Model):
+    """
+    Tracks who attended which events
+    """
+
     member = models.ForeignKey(Member, on_delete=models.PROTECT)
     event = models.ForeignKey(Event, on_delete=models.PROTECT)
     status = models.CharField(
@@ -216,6 +209,11 @@ class EventAttendance(models.Model):
 
 
 class Race(models.Model):
+    """
+    Provided by National; static list, but members
+    can choose any number of options to which they identify
+    """
+
     label = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
@@ -223,6 +221,10 @@ class Race(models.Model):
 
 
 class Region(models.Model):
+    """
+    Region within the Worcester Chapter area
+    """
+
     label = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
@@ -230,6 +232,10 @@ class Region(models.Model):
 
 
 class MembershipCount(models.Model):
+    """
+    Count of members after each list upload
+    """
+
     list_date = models.DateField(unique=True)
     notes = models.TextField(blank=True, null=True)
     constitutional_members = models.IntegerField()

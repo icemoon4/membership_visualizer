@@ -5,6 +5,10 @@ from membership.models import Member, MembershipCount
 
 
 class MemberSerializer(serializers.ModelSerializer):
+    """
+    Serializer to handle weekly member CSV's
+    """
+
     class Meta:
         model = Member
         fields = (
@@ -46,40 +50,26 @@ class MemberSerializer(serializers.ModelSerializer):
             "list_date",
         )
 
-    def create(self, validated_data):
-        print("create")
-        m2m_data = validated_data.pop("race")
-        instance = Member.objects.create(**validated_data)
-
+    def _process_m2m_data(self, instance: Member, m2m_data: list):
         for item in m2m_data:
             instance.race.add(item)
         return instance
 
-    def bool_str_validator(self, value):
-        if not value:
-            value = False  # if False, empty str, or None
-        if isinstance(value, str):
-            value = True if value == "TRUE" else False
+    def create(self, validated_data: dict):
+        race = validated_data.pop("race")
+        instance = Member.objects.create(**validated_data)
 
-        return value
+        return self._process_m2m_data(instance, race)
 
-    def validate_do_not_call(self, value):
-        return self.bool_str_validator(value)
-
-    def validate_p2ptext_optout(self, value):
-        return self.bool_str_validator(value)
-
-    def update(self, instance, validated_data):
-        print("update")
-        m2m_data = validated_data.pop("race")
+    def update(self, instance: Member, validated_data: dict):
+        race = validated_data.pop("race")
         members = Member.objects.filter(actionkit_id=validated_data.get("actionkit_id"))
         members.update(**validated_data)
         members.first().save()  # there's only one record, doing this so it saves the history
 
-        for item in m2m_data:
-            instance.race.add(item)
-        return instance
+        return self._process_m2m_data(instance, race)
 
+      
 class MembershipCountSerializer(serializers.ModelSerializer):
     class Meta:
         model = MembershipCount  # Specify the model to serialize
