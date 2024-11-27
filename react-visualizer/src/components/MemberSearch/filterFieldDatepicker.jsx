@@ -3,8 +3,13 @@ import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from "./Filter.module.css";
 
-export default function filterFieldDatepicker({ name, setQuery, resetDates }) {
-  const [startDate, setStartDate] = useState(new Date());
+export default function filterFieldDatepicker({
+  name,
+  setQuery,
+  resetDates,
+  defaultDate,
+}) {
+  const [startDate, setStartDate] = useState(defaultDate || new Date());
   const [textVisible, setVisibility] = useState(false);
 
   function clean(name) {
@@ -33,6 +38,12 @@ export default function filterFieldDatepicker({ name, setQuery, resetDates }) {
     setStartDate(new Date());
     setVisibility(false);
   }, [resetDates]);
+
+  useEffect(() => {
+    if (defaultDate) {
+      setStartDate(defaultDate); // Update startDate if defaultDate changes
+    }
+  }, [defaultDate]);
 
   return (
     <div>

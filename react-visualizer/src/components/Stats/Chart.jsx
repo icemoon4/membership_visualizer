@@ -8,6 +8,14 @@ export default function MyChart({ data, type }) {
     Width: "33vw",
     legend: { position: "right" },
   };
+  if (
+    !data ||
+    !Array.isArray(data) ||
+    data.length === 0 ||
+    data[0].length === 0
+  ) {
+    return <p>Loading chart data...</p>; // Show a fallback message or loader
+  }
   return (
     <Chart
       // Try different chart types by changing this property with one of: LineChart, BarChart, AreaChart...
