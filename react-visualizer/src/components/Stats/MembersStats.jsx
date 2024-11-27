@@ -76,19 +76,12 @@ export default function MembersStats() {
     console.log("chart dates", chartDates);
     if (!chartDates || Object.keys(chartDates).length !== 2 || !cleanedData)
       return;
-    const fromDate = moment(chartDates[0]);
-    console.log("fromDate:", fromDate);
-    const toDate = moment(chartDates[1]);
+    const fromDate = moment(chartDates[0]).format("YYYY-MM-DD"); //make sure all formats match
+    const toDate = moment(chartDates[1]).format("YYYY-MM-DD");
     let filteredData = [cleanedData[0]]; //initializing our array with the header row
-    console.log("cleaned", cleanedData);
     for (let i = 1; i < cleanedData.length; i++) {
       //starting at 1 to skip the header
       const rowDate = moment(cleanedData[i][0]).format("YYYY-MM-DD");
-      console.log(
-        `${rowDate} is same as ${fromDate}?: ${moment(rowDate).isSame(
-          fromDate
-        )}`
-      );
       if (
         moment(rowDate).isBetween(fromDate, toDate) ||
         moment(rowDate).isSame(fromDate) ||
@@ -97,8 +90,6 @@ export default function MembersStats() {
         filteredData.push(cleanedData[i]);
       }
     }
-
-    console.log("Filtered data:", filteredData);
     setFilterData(filteredData);
   }
 
