@@ -1,6 +1,6 @@
 import stylesLogin from "./Login.module.css";
-import styles from "../App.module.css";
-import LogoHeader from "./LogoHeader";
+import styles from "../../App.module.css";
+import LogoHeader from "../Nav/LogoHeader";
 
 export default function Login() {
   //in the future: this url here: https://medium.com/@preciousimoniakemu/create-a-react-login-page-that-authenticates-with-django-auth-token-8de489d2f751
@@ -13,15 +13,9 @@ export default function Login() {
       <form className={stylesLogin.loginContainer}>
         <LogoHeader />
         <label for="username">Username: </label>
-        <input
-          type="text"
-          onChange={(e) => sendQuery(e.target.value)}
-        />
+        <input type="text" onChange={(e) => sendQuery(e.target.value)} />
         <label for="password">Password: </label>
-        <input
-          type="text"
-          onChange={(e) => sendQuery(e.target.value)}
-        />
+        <input type="text" onChange={(e) => sendQuery(e.target.value)} />
         <button className={styles.redButton}>Log in</button>
       </form>
     </main>

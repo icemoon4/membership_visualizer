@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import Member from "../MemberInline.jsx";
+import Member from "../MemberDisplay/MemberInline.jsx";
 import AdvancedFilter from "./advancedFilter.jsx";
 import SearchFilter from "./SearchFilter.jsx";
 import styles from "./Filter.module.css";

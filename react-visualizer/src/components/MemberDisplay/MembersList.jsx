@@ -1,6 +1,6 @@
-import { MembersContext } from "./MembersContext";
-import Filter from "./Filter/Filter";
-import Nav from "./Nav";
+import { MembersContext } from "../MembersContext";
+import Filter from "../MemberSearch/Filter";
+import Nav from "../Nav/Nav";
 import { useState, useContext } from "react";
 
 export default function MembersList() {
