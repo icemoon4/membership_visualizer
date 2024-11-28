@@ -7,9 +7,11 @@ import moment from "moment";
 export default function MembersStats() {
   const [membershipCounts, setCounts] = useState(null);
   const [cleanedData, setCleanData] = useState(null);
-  const [tempData, setFilterData] = useState(null);
+  const [filteredChartData, setChartData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [chartDates, setChartDates] = useState([]);
+  const [tableDates, setTableDates] = useState([]);
+  const [tableData, setTableData] = useState([]);
 
   const data = [];
 
@@ -19,7 +21,6 @@ export default function MembersStats() {
         const res = await fetch(`http://localhost:8000/api/membership_counts/`);
         const data = await res.json();
         setCounts(data);
-        console.log(data);
       } catch (error) {
         console.error("Failed to fetch membershipCount", error);
       } finally {
@@ -33,6 +34,13 @@ export default function MembersStats() {
   function cleanRow(row) {
     row.splice(2, 1); //removing the notes section (usually null)
     row.splice(0, 1); //removing the week id (useless for our purposes)
+    if (typeof row[1] === "string") {
+      //only the header row is made of strings, ergo
+      for (let i = 0; i < row.length; i++) {
+        row[i] =
+          row[i].charAt(0).toUpperCase() + row[i].slice(1).replaceAll("_", " ");
+      }
+    }
     return row;
   }
 
@@ -43,6 +51,7 @@ export default function MembersStats() {
       });
     //earliest date will be first, latest date is at the end
     setChartDates([orderedDates[0], orderedDates[orderedDates.length - 1]]);
+    setTableDates([orderedDates[0], orderedDates[orderedDates.length - 1]]);
   }
 
   //transforming our json data to fit google charts' data structure
@@ -61,24 +70,28 @@ export default function MembersStats() {
       }
       console.log("org data", data);
       setCleanData(data); //our original clean data; revert to this when no filters
-      setFilterData(data); //acts as our backup
+      setChartData(data); //acts as our backup
       sortSetDates(datesRange);
     }
   }, [membershipCounts]);
 
   useEffect(() => {
     if (chartDates && cleanedData) {
-      fitChartDataToRange();
+      fitChartDataToRange(chartDates, "chart");
     }
   }, [chartDates]);
 
-  function fitChartDataToRange() {
-    console.log("chart dates", chartDates);
-    if (!chartDates || Object.keys(chartDates).length !== 2 || !cleanedData)
-      return;
-    const fromDate = moment(chartDates[0]).format("YYYY-MM-DD"); //make sure all formats match
-    const toDate = moment(chartDates[1]).format("YYYY-MM-DD");
-    let filteredData = [cleanedData[0]]; //initializing our array with the header row
+  useEffect(() => {
+    if (tableDates && cleanedData) {
+      fitChartDataToRange(tableDates, "table");
+    }
+  }, [tableDates]);
+
+  function fitChartDataToRange(dates, chartType) {
+    if (!dates || Object.keys(dates).length !== 2 || !cleanedData) return;
+    const fromDate = moment(dates[0]).format("YYYY-MM-DD"); //make sure all formats match
+    const toDate = moment(dates[1]).format("YYYY-MM-DD");
+    let transformedData = [cleanedData[0]]; //initializing our array with the header row
     for (let i = 1; i < cleanedData.length; i++) {
       //starting at 1 to skip the header
       const rowDate = moment(cleanedData[i][0]).format("YYYY-MM-DD");
@@ -87,10 +100,15 @@ export default function MembersStats() {
         moment(rowDate).isSame(fromDate) ||
         moment(rowDate).isSame(toDate)
       ) {
-        filteredData.push(cleanedData[i]);
+        transformedData.push(cleanedData[i]);
       }
     }
-    setFilterData(filteredData);
+    if (chartType === "chart") {
+      setChartData(transformedData);
+    }
+    if (chartType === "table") {
+      setTableData(transformedData);
+    }
   }
 
   if (!membershipCounts) {
@@ -103,20 +121,26 @@ export default function MembersStats() {
   return (
     <main className={styles.statistics}>
       <aside className={styles.numbersAside}>
-        <h2>huuu</h2>
+        <h2>Percent Change Over Time</h2>
         <div className={styles.chartContainer}>
-          <Chart data={tempData} type="Table" />
+          <FilterChartForm
+            dates={tableDates}
+            asideName="chart"
+            setDates={setTableDates}
+          />
+          <Chart data={tableData} type="Table" />
         </div>
       </aside>
       <aside className={styles.chartAside}>
-        <h1>Chart</h1>
-        <FilterChartForm
-          chartDates={chartDates}
-          asideName="chart"
-          setChartDates={setChartDates}
-        />
+        <h1>Area Chart of Membership Trends</h1>
+
         <div className={styles.chartContainer}>
-          <Chart data={tempData} type="AreaChart" />
+          <FilterChartForm
+            dates={chartDates}
+            asideName="chart"
+            setDates={setChartDates}
+          />
+          <Chart data={filteredChartData} type="AreaChart" />
         </div>
       </aside>
     </main>
