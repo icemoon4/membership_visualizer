@@ -250,3 +250,29 @@ class MembershipCount(models.Model):
 
     def __str__(self):
         return self.list_date.strftime("%b %d, %Y")
+
+
+class MemberOnboarding(models.Model):
+    """
+    Track prospective members and when they were met with, when they join, etc
+    """
+    
+    member = models.ForeignKey(Member, on_delete=models.SET_NULL, blank=True, null=True)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    email = models.EmailField(unique=True)
+    phone = models.CharField(blank=True, null=True, max_length=20)
+    outreach_to_us = models.DateField(blank=True, null=True)
+    onboarder = models.ForeignKey(Member, on_delete=models.SET_NULL, blank=True, null=True, related_name="member_onboarder")
+    last_contacted = models.DateField(blank=True, null=True)
+    meeting_scheduled = models.DateField(blank=True, null=True)
+    texted = models.BooleanField()
+    emailed = models.BooleanField()
+    called = models.BooleanField()
+    dropped = models.BooleanField()
+    responded = models.BooleanField()
+    met_with = models.BooleanField()
+    notes = models.TextField(blank=True, null=True)
+    
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
