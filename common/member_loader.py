@@ -1,4 +1,5 @@
 import csv
+from datetime import datetime
 from io import StringIO
 
 from django.db import models, transaction
@@ -55,8 +56,12 @@ class MemberImporter:
     Processes data from a member CSV file
     """
 
-    def __init__(self, file=None):
+    def __init__(self, file=None, list_date: datetime = None):
         self._file = file
+        if list_date:
+            self.list_date = list_date
+        else:
+            self.list_date = None
         self.bool_fields = (
             "do_not_call",
             "p2ptext_optout",
@@ -74,14 +79,58 @@ class MemberImporter:
 
         self.latest_list_date = latest_list_date
 
-        self.list_date = None
-
     def read_csv(self):
         """
         Returns a list (rows) of dicts (cells) from the CSV file object
         :return: list
         """
         return validate_and_get_file_rows(self._file)
+
+    def update_headers(self, rows: list):
+        """
+        older membership lists were structured differently. Convert the keys to the new format
+        """
+        updated_headers = {
+            "AK_ID": "actionkit_id",
+            "Address_Line_1": "address1",
+            "Address_Line_2": "address2",
+            "Mail_preference": "mailing_pref",
+            "Memb_status": "memb_status_letter",
+            "chapter": "dsa_chapter",
+            "monthly_status": "monthly_dues_status",
+        }
+        deleted_columns = [
+            "DSA_ID",
+            "suffix",
+            "Family_first_name",
+            "Family_last_name",
+            "Organization",
+        ]
+        updated_csv = []
+
+        for row in rows:
+            new_row = {}
+            for key in row.keys():
+                if key not in deleted_columns:
+                    val = row[key]
+                    key = updated_headers.get(key, key).lower()
+                    if key == "membership_status":
+                        val = (
+                            val.capitalize()
+                            .replace("good standing", "Good Standing")
+                            .replace("Expired", "Lapsed")
+                        )
+                    if key == "membership_type":
+                        val = val.replace("annual", "yearly")
+                    if key in ("join_date", "xdate"):
+                        val = val[:10]
+
+                    new_row[key] = val
+            if new_row:
+                new_row["list_date"] = self.list_date
+                updated_csv.append(new_row)
+
+        return updated_csv
 
     def update_counts(self, data: dict):
         """
@@ -125,14 +174,25 @@ class MemberImporter:
             for m2m_field in self.m2m_fields:
                 row[m2m_field] = clean_m2m_list(row.get(m2m_field, ""), Race)
 
+            row["mailing_pref"] = row.get("mailing_pref", "").capitalize()
+            if not row.get("state"):
+                row["state"] = "MA"
+
             # Initialize serializer
             ak_id = row.get("actionkit_id")
+            email = row.get("email")
 
             existing = Member.objects.filter(actionkit_id=ak_id).first()
             if existing:
                 serializer = MemberSerializer(existing, data=row)
             else:
-                serializer = MemberSerializer(data=row)
+                existing = Member.objects.filter(
+                    email=email
+                ).first()  # from older lists, ak id may be different. for some reason
+                if existing:
+                    serializer = MemberSerializer(existing, data=row)
+                else:
+                    serializer = MemberSerializer(data=row)
 
             # Deserialize
             try:
@@ -161,6 +221,12 @@ class MemberImporter:
         Deletes any members which are in the DB but were not in the most recent membership list
         """
         rows = self.read_csv()
+        for row in rows:
+            if not row.get(
+                "list_date"
+            ):  # indicates older file, need to convert to new format
+                rows = self.update_headers(rows)
+            break
         delete_ids = self.clean_and_deserialize_data(rows)
 
         # process deletions

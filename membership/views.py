@@ -22,6 +22,7 @@ def detail(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
     return render(request, "detail.html", {"member": member})
 
+
 def detail_json(request, member_id):
     member = get_object_or_404(Member, pk=member_id)
     members_serializer = MemberSerializer(member, many=False)
@@ -44,14 +45,13 @@ class MemberView(viewsets.ModelViewSet):
     serializer_class = MemberSerializer
     queryset = Member.objects.all()
 
+
 @api_view(["GET"])
 def membership_counts(request):
     if request.method == "GET":
         counts = MembershipCount.objects.all()
         members_serializer = MembershipCountSerializer(counts, many=True)
         return JsonResponse(members_serializer.data, safe=False)
-
-
 
 
 @api_view(["GET"])

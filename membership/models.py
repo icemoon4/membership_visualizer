@@ -13,6 +13,7 @@ DUES_STATUSES = (
     ("lapsed", "Lapsed"),
     ("active", "Active"),
     ("manual", "Manual"),
+    ("overdue", "Overdue"),
     ("past_due", "Past Due"),
     ("canceled_by_failure", "Canceled by Failure"),
     ("canceled_by_admin", "Canceled by Admin"),
@@ -79,14 +80,14 @@ class Member(models.Model):
 
     first_name = models.CharField(max_length=255)
     middle_name = models.CharField(max_length=255, blank=True, null=True)
-    last_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255, blank=True, null=True)
     email = models.EmailField(unique=True)
     do_not_call = models.BooleanField(default=False)
     p2ptext_optout = models.BooleanField(default=False)
     best_phone = models.CharField(blank=True, null=True, max_length=20)
-    mobile_phone = models.CharField(blank=True, null=True, max_length=20)
-    home_phone = models.CharField(blank=True, null=True, max_length=20)
-    work_phone = models.CharField(blank=True, null=True, max_length=20)
+    mobile_phone = models.CharField(blank=True, null=True, max_length=200)
+    home_phone = models.CharField(blank=True, null=True, max_length=200)
+    work_phone = models.CharField(blank=True, null=True, max_length=200)
     join_date = models.DateField()
     xdate = models.DateField()
     membership_type = models.CharField(
@@ -116,7 +117,7 @@ class Member(models.Model):
     )
     student_school_name = models.CharField(blank=True, null=True, max_length=255)
     mailing_pref = models.CharField(choices=MAILING_PREF_CHOICES, max_length=255)
-    address1 = models.CharField(max_length=255)
+    address1 = models.CharField(blank=True, null=True, max_length=255)
     address2 = models.CharField(blank=True, null=True, max_length=255)
     city = models.CharField(max_length=255)
     state = models.CharField(max_length=2, default="MA")
