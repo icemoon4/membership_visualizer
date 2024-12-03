@@ -9,7 +9,7 @@ export default function Nav() {
       <div className={styles.pageOptions}>
         <Link to="/">Search</Link>
         <Link to="/Statistics">Statistics</Link>
-        <Link to="/Login">Log out</Link>
+        <Link to="/Logout">Log out</Link>
       </div>
     </nav>
   );
