@@ -1,14 +1,15 @@
 import stylesLogin from "./Login.module.css";
-import styles from "../App.module.css";
+import styles from "../../App.module.css";
 import React, { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import LogoHeader from "./LogoHeader";
+import LogoHeader from "../LogoHeader";
 import axios from "axios";
 
-export default function Login() {
+export default function Login({ onLoginSuccess }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorDisplay, setError] = useState("");
+  const navigate = useNavigate();
   //in the future: this url here: https://medium.com/@preciousimoniakemu/create-a-react-login-page-that-authenticates-with-django-auth-token-8de489d2f751
   //I think this should take the branch name as a parameter a put it in the header
   const handleLogin = async (e) => {
@@ -22,6 +23,8 @@ export default function Login() {
       localStorage.setItem("token", response.data.access);
       console.log(response.data.access);
       navigate("/search");
+      onLoginSuccess();
+      console.log("navigating");
     } catch (error) {
       console.error("Login failed:", error.response.data);
       axios.defaults.headers.common["Authorization"] = null;
@@ -42,13 +45,13 @@ export default function Login() {
         <label htmlFor="username">Username: </label>
         <input
           htmlFor="username"
-          type="text"
+          type="username"
           onChange={(e) => setUsername(e.target.value)}
         />
         <label htmlFor="password">Password: </label>
         <input
           htmlFor="password"
-          type="text"
+          type="password"
           onChange={(e) => setPassword(e.target.value)}
         />
         <button className={styles.redButton}>Log in</button>
