@@ -7,9 +7,9 @@ export default function filterFieldDatepicker({
   name,
   setQuery,
   resetDates,
-  setResetDates,
+  defaultDate,
 }) {
-  const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(defaultDate || new Date());
   const [textVisible, setVisibility] = useState(false);
 
   function clean(name) {
@@ -38,6 +38,12 @@ export default function filterFieldDatepicker({
     setStartDate(new Date());
     setVisibility(false);
   }, [resetDates]);
+
+  useEffect(() => {
+    if (defaultDate) {
+      setStartDate(defaultDate); // Update startDate if defaultDate changes
+    }
+  }, [defaultDate]);
 
   return (
     <div>

@@ -1,7 +1,7 @@
 import { useParams, useLocation } from "react-router-dom";
-import Nav from "./Nav";
+import Nav from "../Nav/Nav";
 import React, { useEffect, useState, useContext } from "react";
-import { MembersContext } from "./MembersContext";
+import { MembersContext } from "../MembersContext";
 
 export default function MemberPage() {
   const { memberId } = useParams();
