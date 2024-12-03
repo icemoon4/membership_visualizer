@@ -2,6 +2,7 @@ from rest_framework import serializers
 from simple_history.utils import bulk_update_with_history
 
 from membership.models import Member, MembershipCount
+from django.contrib.auth.models import User
 
 
 class MemberSerializer(serializers.ModelSerializer):
@@ -69,8 +70,14 @@ class MemberSerializer(serializers.ModelSerializer):
 
         return self._process_m2m_data(instance, race)
 
-      
+
 class MembershipCountSerializer(serializers.ModelSerializer):
     class Meta:
         model = MembershipCount  # Specify the model to serialize
-        fields = '__all__'  # Serialize all fields in MembershipCount
+        fields = "__all__"  # Serialize all fields in MembershipCount
+
+#taken from here https://dev.to/akdevelop/django-react-login-how-to-setup-a-login-page-5dl8
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'email')

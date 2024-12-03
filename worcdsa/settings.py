@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
+    'rest_framework_simplejwt',
+    #'myapp', for some reason in the tut they had their own app listed; try this later
     "simple_history",
 ]
 
@@ -61,7 +63,7 @@ ROOT_URLCONF = "worcdsa.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -130,6 +132,12 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
+REST_FRAMEWORK = {
+       'DEFAULT_AUTHENTICATION_CLASSES': (
+           'rest_framework_simplejwt.authentication.JWTAuthentication',
+       )
+   }
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -140,3 +148,6 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:8081",
     "http://localhost:5173",
 ]
+
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"

@@ -1,7 +1,5 @@
 from datetime import datetime
-
 from django.db import models
-
 from common.member_loader import MemberImporter
 
 

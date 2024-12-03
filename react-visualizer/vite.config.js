@@ -1,6 +1,8 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { resolve } from "path";
 export default defineConfig({
+  base: "./",
   plugins: [react()],
   resolve: {
     mainFields: [],
@@ -10,5 +12,21 @@ export default defineConfig({
   },
   optimizeDeps: {
     exclude: ["react-google-charts"],
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            // Split vendor code (libraries in node_modules) into a separate chunk
+            return "vendor";
+          }
+        },
+        assetFileNames: "[name]-[hash][extname]",
+        chunkFileNames: "[name]-[hash].js",
+        entryFileNames: "[name]-[hash].js",
+      },
+    },
+    chunkSizeWarningLimit: 1000, // Adjust the warning limit (e.g., 1000 kBs)
   },
 });
