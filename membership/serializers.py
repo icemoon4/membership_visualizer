@@ -64,6 +64,8 @@ class MemberSerializer(serializers.ModelSerializer):
     def update(self, instance: Member, validated_data: dict):
         race = validated_data.pop("race")
         members = Member.objects.filter(actionkit_id=validated_data.get("actionkit_id"))
+        if not members.first():
+            members = Member.objects.filter(email=validated_data.get("email"))
         members.update(**validated_data)
         members.first().save()  # there's only one record, doing this so it saves the history
 

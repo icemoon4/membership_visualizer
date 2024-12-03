@@ -58,10 +58,9 @@ class MemberImporter:
 
     def __init__(self, file=None, list_date: datetime = None):
         self._file = file
+        self.list_date = None
         if list_date:
             self.list_date = list_date
-        else:
-            self.list_date = None
         self.bool_fields = (
             "do_not_call",
             "p2ptext_optout",
@@ -221,12 +220,8 @@ class MemberImporter:
         Deletes any members which are in the DB but were not in the most recent membership list
         """
         rows = self.read_csv()
-        for row in rows:
-            if not row.get(
-                "list_date"
-            ):  # indicates older file, need to convert to new format
-                rows = self.update_headers(rows)
-            break
+        if self.list_date and self.list_date < datetime(2022, 4, 25).date(): # the date lists were converted to new format
+            rows = self.update_headers(rows)
         delete_ids = self.clean_and_deserialize_data(rows)
 
         # process deletions
