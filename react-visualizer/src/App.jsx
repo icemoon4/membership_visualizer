@@ -1,15 +1,15 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import MembersList from "./components/MembersList";
+import React, { useState, useEffect } from "react";
+import { Navigate } from "react-router-dom";
+import MembersList from "./components/MemberDisplay/MembersList";
 import PageNotFound from "./components/PageNotFound";
-import MembersStats from "./components/MembersStats";
+import MembersStats from "./components/Stats/MembersStats";
 import Login from "./components/LoginAuth/Login";
 import styles from "./app.module.css";
-import { Navigate } from "react-router-dom";
-import Nav from "./components/Nav";
+import Nav from "./components/Nav/Nav";
 import Logout from "./components/LoginAuth/Logout";
-import MemberPage from "./components/MemberPage";
+import MemberPage from "./components/MemberDisplay/MemberPage";
 import { MembersProvider } from "./components/MembersContext.jsx";
-import React, { useState, useEffect } from "react";
 import { validateToken } from "./components/LoginAuth/validateToken";
 import PrivateRoute from "./components/LoginAuth/PrivateRoute";
 

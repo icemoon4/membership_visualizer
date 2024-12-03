@@ -2,7 +2,7 @@ import stylesLogin from "./Login.module.css";
 import styles from "../../App.module.css";
 import React, { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import LogoHeader from "../LogoHeader";
+import LogoHeader from "../Nav/LogoHeader";
 import axios from "axios";
 
 export default function Login({ onLoginSuccess }) {
