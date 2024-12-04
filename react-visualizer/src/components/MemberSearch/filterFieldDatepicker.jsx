@@ -8,8 +8,10 @@ export default function filterFieldDatepicker({
   setQuery,
   resetDates,
   defaultDate,
+  datesRange,
 }) {
   const [startDate, setStartDate] = useState(defaultDate || new Date());
+  const [initialDatesRange, setDatesRange] = useState([]);
   const [textVisible, setVisibility] = useState(false);
 
   function clean(name) {
@@ -27,6 +29,7 @@ export default function filterFieldDatepicker({
       );
     }
   }
+
   function newSetQuery(name, date) {
     setStartDate(date);
     setQuery(name, date);
@@ -39,26 +42,49 @@ export default function filterFieldDatepicker({
   }, [resetDates]);
 
   useEffect(() => {
-    if (
-      (defaultDate && typeof defaultDate === "string") ||
-      (defaultDate && defaultDate instanceof String)
-    ) {
-      setStartDate(defaultDate.replace(/-/g, "/")); // Update startDate if defaultDate changes
-      //if we don't replace the - with / we get the one-day-off glitch?! read more here
-      //https://stackoverflow.com/questions/7556591/is-the-javascript-date-object-always-one-day-off
-    } else { //else this is a moment date and we don't need to do anything else
-      setStartDate(defaultDate);
+    if (initialDatesRange.length === 0 && datesRange !== undefined) {
+      setDatesRange(cleanRange(datesRange));
+    }
+  }, [datesRange]);
+
+  function cleanRange(dates) {
+    // Convert all string dates to Date objects
+    return dates.map((date) => {
+      if (typeof date === "string") {
+        return new Date(date.replace(/-/g, "/")); // Replace `-` with `/` for consistent parsing
+      }
+      return date; // Already a Date object
+    });
+  }
+
+  useEffect(() => {
+    if (defaultDate) {
+      let curDate = defaultDate;
+      if (typeof defaultDate === "string") {
+        curDate = new Date(curDate.replace(/-/g, "/"));
+        newSetQuery(name, curDate);
+      }
+      setStartDate(curDate); // Update startDate if defaultDate changes
     }
   }, [defaultDate]);
+
+  function handleClick() {
+    setVisibility(true);
+  }
 
   return (
     <div>
       <label>{`${clean(name)}`}</label>
       <DatePicker
-        utcOffset={0}
         className={textVisible ? styles.active : styles.inactive}
         selected={startDate}
         onChange={(date) => newSetQuery(name, date)}
+        onCalendarOpen={handleClick}
+        includeDateIntervals={
+          datesRange
+            ? [{ start: initialDatesRange[0], end: initialDatesRange[1] }]
+            : [{ start: new Date(70, 0, 1), end: new Date() }]
+        }
       />
     </div>
   );
