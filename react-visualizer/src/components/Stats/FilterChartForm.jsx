@@ -11,7 +11,6 @@ export default function FilterChartForm({ asideName, dates, setDates }) {
       [key]: value,
     }));
   }
-
   function handleSubmit(e) {
     e.preventDefault();
     setDates(Object.values(currentParameters));
@@ -22,11 +21,13 @@ export default function FilterChartForm({ asideName, dates, setDates }) {
         name={`${asideName}_from`}
         setQuery={setQuery}
         defaultDate={dates[0]}
+        datesRange={dates}
       />
       <FilterFieldDatepicker
         name={`${asideName}_to`}
         setQuery={setQuery}
         defaultDate={dates[1]}
+        datesRange={dates}
       />{" "}
       <button className={mainStyles.redButton} onClick={(e) => handleSubmit(e)}>
         Go!
