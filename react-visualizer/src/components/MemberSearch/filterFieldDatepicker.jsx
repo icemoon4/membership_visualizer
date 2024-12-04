@@ -48,12 +48,12 @@ export default function filterFieldDatepicker({
   }, [datesRange]);
 
   function cleanRange(dates) {
-    // Convert all string dates to Date objects
+    //convert all string dates to Date objects
     return dates.map((date) => {
       if (typeof date === "string") {
-        return new Date(date.replace(/-/g, "/")); // Replace `-` with `/` for consistent parsing
+        return new Date(date.replace(/-/g, "/")); //replace `-` with `/` for consistent parsing
       }
-      return date; // Already a Date object
+      return date; 
     });
   }
 
@@ -64,7 +64,7 @@ export default function filterFieldDatepicker({
         curDate = new Date(curDate.replace(/-/g, "/"));
         newSetQuery(name, curDate);
       }
-      setStartDate(curDate); // Update startDate if defaultDate changes
+      setStartDate(curDate); //update startDate if defaultDate changes
     }
   }, [defaultDate]);
 
