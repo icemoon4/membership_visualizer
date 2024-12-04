@@ -68,7 +68,6 @@ export default function MembersStats() {
         row = cleanRow(row);
         data.push(row);
       }
-      console.log("org data", data);
       setCleanData(data); //our original clean data; revert to this when no filters
       setChartData(data); //acts as our backup
       sortSetDates(datesRange);

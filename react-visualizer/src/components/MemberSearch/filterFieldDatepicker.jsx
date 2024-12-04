@@ -27,7 +27,6 @@ export default function filterFieldDatepicker({
       );
     }
   }
-
   function newSetQuery(name, date) {
     setStartDate(date);
     setQuery(name, date);
@@ -41,7 +40,9 @@ export default function filterFieldDatepicker({
 
   useEffect(() => {
     if (defaultDate) {
-      setStartDate(defaultDate); // Update startDate if defaultDate changes
+      setStartDate(defaultDate.replace(/-/g, "/")); // Update startDate if defaultDate changes
+      //if we don't replace the - with / we get the one-day-off glitch?! read more here
+      //https://stackoverflow.com/questions/7556591/is-the-javascript-date-object-always-one-day-off
     }
   }, [defaultDate]);
 
@@ -49,6 +50,7 @@ export default function filterFieldDatepicker({
     <div>
       <label>{`${clean(name)}`}</label>
       <DatePicker
+        utcOffset={0}
         className={textVisible ? styles.active : styles.inactive}
         selected={startDate}
         onChange={(date) => newSetQuery(name, date)}
