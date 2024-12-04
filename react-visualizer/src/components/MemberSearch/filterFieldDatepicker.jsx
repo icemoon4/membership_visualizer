@@ -46,19 +46,24 @@ export default function filterFieldDatepicker({
       setStartDate(defaultDate.replace(/-/g, "/")); // Update startDate if defaultDate changes
       //if we don't replace the - with / we get the one-day-off glitch?! read more here
       //https://stackoverflow.com/questions/7556591/is-the-javascript-date-object-always-one-day-off
-    } else { //else this is a moment date and we don't need to do anything else
+    } else {
+      //else this is a moment date and we don't need to do anything else
       setStartDate(defaultDate);
     }
   }, [defaultDate]);
+
+  function handleClick() {
+    setVisibility(true);
+  }
 
   return (
     <div>
       <label>{`${clean(name)}`}</label>
       <DatePicker
-        utcOffset={0}
         className={textVisible ? styles.active : styles.inactive}
         selected={startDate}
         onChange={(date) => newSetQuery(name, date)}
+        onCalendarOpen={handleClick}
       />
     </div>
   );
