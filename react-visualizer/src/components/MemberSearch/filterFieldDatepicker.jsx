@@ -47,24 +47,30 @@ export default function filterFieldDatepicker({
     }
   }, [datesRange]);
 
+  
   function cleanRange(dates) {
-    //convert all string dates to Date objects
     return dates.map((date) => {
       if (typeof date === "string") {
-        return new Date(date.replace(/-/g, "/")); //replace `-` with `/` for consistent parsing
+        return cleanDate(date);
       }
-      return date; 
+      return date;
     });
+  }
+
+  //prevents that crazy issue w/ javascript date-parsing strings structured as yyyy-mm-dd
+  //as being one day earlier in timezones before UTC
+  function cleanDate(date) {
+    return new Date(date.replace(/-/g, "/"));
   }
 
   useEffect(() => {
     if (defaultDate) {
       let curDate = defaultDate;
       if (typeof defaultDate === "string") {
-        curDate = new Date(curDate.replace(/-/g, "/"));
+        curDate = cleanDate(curDate);
         newSetQuery(name, curDate);
       }
-      setStartDate(curDate); //update startDate if defaultDate changes
+      setStartDate(curDate);
     }
   }, [defaultDate]);
 
