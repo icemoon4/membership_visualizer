@@ -16,6 +16,7 @@ import PrivateRoute from "./components/LoginAuth/PrivateRoute";
 function App() {
   //add a check for login state that returns only the login page here
   const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const [loading, setLoading] = useState(true); // Loading state for validation
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem("token");
@@ -26,10 +27,15 @@ function App() {
       } else {
         setIsAuthenticated(false);
       }
-      console.log("is_auth:", isAuthenticated);
+      setLoading(false);
+      //console.log("is_auth:", isAuthenticated);
     };
     checkAuth();
   }, []);
+
+  if (loading) {
+    return <div>Checking authentication...</div>;
+  }
 
   return (
     <BrowserRouter>
