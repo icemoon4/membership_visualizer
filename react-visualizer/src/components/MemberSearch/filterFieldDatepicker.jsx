@@ -47,7 +47,6 @@ export default function filterFieldDatepicker({
     }
   }, [datesRange]);
 
-  
   function cleanRange(dates) {
     return dates.map((date) => {
       if (typeof date === "string") {
@@ -59,8 +58,9 @@ export default function filterFieldDatepicker({
 
   //prevents that crazy issue w/ javascript date-parsing strings structured as yyyy-mm-dd
   //as being one day earlier in timezones before UTC
+  //see more about it here https://stackoverflow.com/questions/7556591/is-the-javascript-date-object-always-one-day-off
   function cleanDate(date) {
-    return new Date(date.replace(/-/g, "/"));
+    return new Date(date.replace("-", "/"));
   }
 
   useEffect(() => {
