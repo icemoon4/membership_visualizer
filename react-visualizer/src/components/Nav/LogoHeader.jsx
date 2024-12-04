@@ -5,8 +5,9 @@ export default function LogoHeader() {
       <img src="\src\assets\headerlogo-400x400.png" />
       <h2>
         DSA <br />
-        Worcester
+        Membership
         <br />
+        Visualizer
       </h2>
     </header>
   );
