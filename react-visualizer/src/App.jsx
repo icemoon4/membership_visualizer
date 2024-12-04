@@ -16,7 +16,6 @@ import PrivateRoute from "./components/LoginAuth/PrivateRoute";
 function App() {
   //add a check for login state that returns only the login page here
   const [isAuthenticated, setIsAuthenticated] = useState(null);
-
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem("token");
