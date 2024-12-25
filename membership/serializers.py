@@ -65,6 +65,8 @@ class MemberSerializer(serializers.ModelSerializer):
     def update(self, instance: Member, validated_data: dict):
         race = validated_data.pop("race")
         members = Member.objects.filter(actionkit_id=validated_data.get("actionkit_id"))
+        if not members.first():
+            members = Member.objects.filter(email=validated_data.get("email"))
         members.update(**validated_data)
         members.first().save()  # there's only one record, doing this so it saves the history
 
@@ -76,8 +78,9 @@ class MembershipCountSerializer(serializers.ModelSerializer):
         model = MembershipCount  # Specify the model to serialize
         fields = "__all__"  # Serialize all fields in MembershipCount
 
+
 #taken from here https://dev.to/akdevelop/django-react-login-how-to-setup-a-login-page-5dl8
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email')
+        fields = ("id", "username", "email")
