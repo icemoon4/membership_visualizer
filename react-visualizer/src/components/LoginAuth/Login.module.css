@@ -4,6 +4,22 @@
   align-items: center;
 }
 
+.inactive {
+  display: none;
+}
+
+.active {
+  display: block;
+}
+
+.error {
+  background-color: var(--dsa-red);
+  margin: -25px -25px 25px -25px;
+  color: white;
+  text-align: center;
+  padding: 5px;
+}
+
 .loginPage {
   display: flex;
   flex-direction: column;

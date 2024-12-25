@@ -8,8 +8,10 @@ export default function filterFieldDatepicker({
   setQuery,
   resetDates,
   defaultDate,
+  datesRange,
 }) {
   const [startDate, setStartDate] = useState(defaultDate || new Date());
+  const [initialDatesRange, setDatesRange] = useState([]);
   const [textVisible, setVisibility] = useState(false);
 
   function clean(name) {
@@ -40,10 +42,41 @@ export default function filterFieldDatepicker({
   }, [resetDates]);
 
   useEffect(() => {
+    if (initialDatesRange.length === 0 && datesRange !== undefined) {
+      setDatesRange(cleanRange(datesRange));
+    }
+  }, [datesRange]);
+
+  function cleanRange(dates) {
+    return dates.map((date) => {
+      if (typeof date === "string") {
+        return cleanDate(date);
+      }
+      return date;
+    });
+  }
+
+  //prevents that crazy issue w/ javascript date-parsing strings structured as yyyy-mm-dd
+  //as being one day earlier in timezones before UTC
+  //see more about it here https://stackoverflow.com/questions/7556591/is-the-javascript-date-object-always-one-day-off
+  function cleanDate(date) {
+    return new Date(date.replace("-", "/"));
+  }
+
+  useEffect(() => {
     if (defaultDate) {
-      setStartDate(defaultDate); // Update startDate if defaultDate changes
+      let curDate = defaultDate;
+      if (typeof defaultDate === "string") {
+        curDate = cleanDate(curDate);
+        newSetQuery(name, curDate);
+      }
+      setStartDate(curDate);
     }
   }, [defaultDate]);
+
+  function handleClick() {
+    setVisibility(true);
+  }
 
   return (
     <div>
@@ -52,6 +85,12 @@ export default function filterFieldDatepicker({
         className={textVisible ? styles.active : styles.inactive}
         selected={startDate}
         onChange={(date) => newSetQuery(name, date)}
+        onCalendarOpen={handleClick}
+        includeDateIntervals={
+          datesRange
+            ? [{ start: initialDatesRange[0], end: initialDatesRange[1] }]
+            : [{ start: new Date(70, 0, 1), end: new Date() }]
+        }
       />
     </div>
   );
