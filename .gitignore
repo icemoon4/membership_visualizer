@@ -1,5 +1,8 @@
 #WorcDSA-specific 
 uploads/
+backups/
+.pg_service.conf
+.pgpass
 
 # Logs
 logs

@@ -83,11 +83,10 @@ WSGI_APPLICATION = "worcdsa.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "membership_test",
-        "USER": "admin",
-        "PASSWORD": "admin",
-        "HOST": "localhost",
-        "PORT": "5432",
+        "OPTIONS": {
+            "service": "memerbship_service",
+            "passfile": ".pgpass",
+        }
     }
 }
 
