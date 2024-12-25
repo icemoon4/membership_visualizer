@@ -23,7 +23,15 @@ class MembershipFile(models.Model):
         """
         name = self.file.name
         if name[-4:] == ".csv":
-            importer = MemberImporter(self.file)
+            file_name_start = name.rfind("/") + 1
+            potential_list_date_str = name[file_name_start : file_name_start + 11]
+            try:
+                potential_list_date = datetime.strptime(
+                    potential_list_date_str, "%b_%d_%Y"
+                ).date()
+            except ValueError:
+                potential_list_date = None
+            importer = MemberImporter(file=self.file, list_date=potential_list_date)
             importer.process_file()
 
             # set processed flag
