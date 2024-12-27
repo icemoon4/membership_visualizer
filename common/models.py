@@ -1,5 +1,7 @@
 from datetime import datetime
+
 from django.db import models
+
 from common.member_loader import MemberImporter
 
 
@@ -23,11 +25,12 @@ class MembershipFile(models.Model):
         """
         name = self.file.name
         if name[-4:] == ".csv":
+            # NOTE: date on the membership list filename must match the following format: YYYY-MMDD
             file_name_start = name.rfind("/") + 1
-            potential_list_date_str = name[file_name_start : file_name_start + 11]
+            potential_list_date_str = name[file_name_start : file_name_start + 9]
             try:
                 potential_list_date = datetime.strptime(
-                    potential_list_date_str, "%b_%d_%Y"
+                    potential_list_date_str, "%Y-%m%d"
                 ).date()
             except ValueError:
                 potential_list_date = None
