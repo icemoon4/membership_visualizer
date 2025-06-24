@@ -1,10 +1,35 @@
 .memberCard {
+  background-color: white;
+}
+
+.MembersList .memberCard {
   margin: 10px;
   padding: 10px;
-  background-color: white;
 }
 
 .memberTitle {
   color: var(--dsa-red);
   font-weight: bold;
+}
+
+#cardContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#cardContainer .memberCard {
+  border-radius: 3px;
+  width: 33vw;
+  min-width: 350px;
+  max-width: 550px;
+  position: relative;
+}
+
+#cardContainer h2 {
+  margin-bottom: 10px;
+}
+
+#cardContainer h2:first-of-type {
+  margin-top: 0px;
 }
