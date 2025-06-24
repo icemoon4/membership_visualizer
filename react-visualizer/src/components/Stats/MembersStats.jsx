@@ -18,7 +18,7 @@ export default function MembersStats() {
   useEffect(() => {
     async function fetchMembershipCount() {
       try {
-        const res = await fetch(`http://localhost:8000/api/membership_counts/`);
+        const res = await fetch(`/api/membership_counts/`);
         const data = await res.json();
         setCounts(data);
       } catch (error) {
