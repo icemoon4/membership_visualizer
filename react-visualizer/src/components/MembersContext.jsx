@@ -9,8 +9,9 @@ export function MembersProvider({ children }) {
   useEffect(() => {
     async function fetchMembers() {
       try {
-        const res = await axios.get('/api/data');
-        setMembers(res.data);
+        const res = await fetch(`/api/data`);
+        const data = await res.json();
+        setMembers(JSON.parse(data));
       } catch (error) {
         console.error("Failed to fetch members", error);
       } finally {
