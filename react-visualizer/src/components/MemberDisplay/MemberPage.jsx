@@ -2,6 +2,7 @@ import { useParams, useLocation } from "react-router-dom";
 import Nav from "../Nav/Nav";
 import React, { useEffect, useState, useContext } from "react";
 import { MembersContext } from "../MembersContext";
+import styles from "./member.module.css";
 
 export default function MemberPage() {
   const { memberId } = useParams();
@@ -59,7 +60,7 @@ export default function MemberPage() {
             <b>Union member:</b> {member.fields.union_member}
           </div>
           {member.fields.union_name === "" ? (
-            <div></div>
+            <span></span>
           ) : (
             <p>
               <div>
@@ -106,7 +107,7 @@ export default function MemberPage() {
             <b>Membership type:</b> {member.fields.membership_type}
           </div>
           <div>
-            <b>Joined in the past month?:</b>{" "}
+            <b>Joined in the past month?:</b>
             {member.fields.new_member_past_month}
           </div>
 

@@ -13,6 +13,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 90vh;
+}
+
+section div {
+  border-bottom: 1px #a4a4a4 dashed;
+  padding: 3px 1px;
+}
+
+h1 {
+  color: var(--dsa-red);
+}
+
+h2 {
+  color: var(--dark-dsa-red);
 }
 
 .memberCardFull {
