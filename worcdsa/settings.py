@@ -160,6 +160,10 @@ STORAGES = {
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
+    # For handling uploaded media files
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
 }
 
 # Don't store the original (un-hashed filename) version of static files, to reduce slug size:
