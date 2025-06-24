@@ -44,6 +44,7 @@ function App() {
           <Nav />
           <MembersProvider>
             <Routes>
+              <Route path="/" element={<Navigate to="/app/search" replace />} />
               <Route
                 path="/app/search"
                 element={
