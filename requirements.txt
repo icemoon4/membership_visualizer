@@ -1,5 +1,5 @@
 dj-database-url==3.0.0
-﻿black==23.7.0
+black==23.7.0
 Django>=4.2.16
 django-cors-headers==4.3.0
 django-extensions==3.2.3
