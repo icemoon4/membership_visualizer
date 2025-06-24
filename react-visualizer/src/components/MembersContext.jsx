@@ -10,7 +10,6 @@ export function MembersProvider({ children }) {
     async function fetchMembers() {
       try {
         const res = await axios.get('/api/data');
-        const data = await res.json();
         setMembers(res.data);
       } catch (error) {
         console.error("Failed to fetch members", error);

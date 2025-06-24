@@ -4,7 +4,7 @@ from pathlib import Path
 # Current directory
 current_dir = Path(__file__).parent
 index_html_path = current_dir / "index.html"
-output_template = current_dir.parent / "templates" / "index.html"
+output_template = current_dir.parent.parent / "templates" / "index.html"
 output_template.parent.mkdir(parents=True, exist_ok=True)
 
 # Load HTML
