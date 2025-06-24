@@ -20,11 +20,7 @@ from membership.serializers import MemberSerializer, MembershipCountSerializer
 
 # Create your views here.
 def index(request):
-    member_list = Member.objects.order_by("list_date")
-    context = {
-        "member_list": member_list,
-    }
-    return render(request, "index.html", context)
+    return render(request, "index.html")
 
 
 @login_required(login_url="/accounts/login/")
