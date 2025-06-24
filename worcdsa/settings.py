@@ -87,7 +87,7 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "OPTIONS": {
-            "service": "memerbship_service",
+            "service": "membership_service",
             "passfile": ".pgpass",
         }
     }
