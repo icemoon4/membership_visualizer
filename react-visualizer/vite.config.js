@@ -1,8 +1,8 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { resolve } from "path";
+import path from 'path'
 export default defineConfig({
-  base: "./",
+  base: "/static/react/",
   plugins: [react()],
   resolve: {
     mainFields: [],
@@ -14,6 +14,8 @@ export default defineConfig({
     exclude: ["react-google-charts"],
   },
   build: {
+    outDir: path.resolve(__dirname, '../static/react'),
+    emptyOutDir: true,
     rollupOptions: {
       output: {
         manualChunks(id) {

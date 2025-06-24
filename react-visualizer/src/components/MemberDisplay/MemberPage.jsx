@@ -20,7 +20,7 @@ export default function MemberPage() {
       async function fetchMemberById() {
         setIsLoading(true);
         try {
-          const res = await fetch(`http://localhost:8000/api/${memberId}/data`);
+          const res = await fetch(`/api/${memberId}/data`);
           const data = await res.json();
           setMember(JSON.parse(data)); //find the guy with the passed memberId
         } catch (error) {
