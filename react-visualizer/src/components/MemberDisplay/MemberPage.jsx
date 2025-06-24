@@ -44,8 +44,8 @@ export default function MemberPage() {
   }
 
   return (
-    <div id="cardContainer">
-      <div className="memberCardFull">
+    <div className={styles.cardContainer}>
+      <div className={styles.memberCardFull}>
         <h1>
           {member.fields.first_name} {member.fields.last_name}
         </h1>

@@ -9,7 +9,7 @@
   font-weight: bold;
 }
 
-#cardContainer {
+.cardContainer {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -37,10 +37,10 @@ h2 {
   position: relative;
 }
 
-#cardContainer h2 {
+.cardContainer h2 {
   margin-bottom: 10px;
 }
 
-#cardContainer h2:first-of-type {
+.cardContainer h2:first-of-type {
   margin-top: 0px;
 }
