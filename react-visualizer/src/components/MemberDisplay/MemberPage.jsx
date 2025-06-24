@@ -44,7 +44,7 @@ export default function MemberPage() {
 
   return (
     <div id="cardContainer">
-      <div className="memberCard">
+      <div className="memberCardFull">
         <h1>
           {member.fields.first_name} {member.fields.last_name}
         </h1>
