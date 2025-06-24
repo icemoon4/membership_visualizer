@@ -21,10 +21,10 @@ export default function Login({ onLoginSuccess }) {
       });
       setError(null);
       localStorage.setItem("token", response.data.access);
-      console.log(response.data.access);
+      //console.log(response.data.access);
       navigate("/search");
       onLoginSuccess();
-      console.log("navigating");
+      //console.log("navigating");
     } catch (error) {
       console.error("Login failed:", error.response.data);
       axios.defaults.headers.common["Authorization"] = null;

@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-
+import axios from 'axios';
 export const MembersContext = createContext();
 
 export function MembersProvider({ children }) {
@@ -9,9 +9,9 @@ export function MembersProvider({ children }) {
   useEffect(() => {
     async function fetchMembers() {
       try {
-        const res = await fetch(`/api/data`);
+        const res = await axios.get('/api/data');
         const data = await res.json();
-        setMembers(JSON.parse(data));
+        setMembers(res.data);
       } catch (error) {
         console.error("Failed to fetch members", error);
       } finally {
