@@ -22,7 +22,7 @@ export default function Login({ onLoginSuccess }) {
       setError(null);
       localStorage.setItem("token", response.data.access);
       //console.log(response.data.access);
-      navigate("/search");
+      navigate("/app/search");
       onLoginSuccess();
       //console.log("navigating");
     } catch (error) {
