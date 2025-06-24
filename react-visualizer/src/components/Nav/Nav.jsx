@@ -7,6 +7,7 @@ export default function Nav() {
     <nav className={styles.navBar}>
       <LogoHeader />
       <div className={styles.pageOptions}>
+        <Link to="/admin">Admin</Link>
         <Link to="/app/search">Search</Link>
         <Link to="/app/statistics">Statistics</Link>
         <Link to="/app/logout">Log out</Link>
