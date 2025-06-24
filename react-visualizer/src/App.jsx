@@ -45,7 +45,7 @@ function App() {
           <MembersProvider>
             <Routes>
               <Route
-                path="/search"
+                path="/app/search"
                 element={
                   <PrivateRoute isValid={isAuthenticated}>
                     <MembersList />
@@ -53,7 +53,7 @@ function App() {
                 }
               />
               <Route
-                path="/statistics"
+                path="/app/statistics"
                 element={
                   <PrivateRoute isValid={isAuthenticated}>
                     <MembersStats />
@@ -61,7 +61,7 @@ function App() {
                 }
               />
               <Route
-                path="/members/:memberId"
+                path="/app/members/:memberId"
                 element={
                   <PrivateRoute isValid={isAuthenticated}>
                     <MemberPage />
@@ -69,7 +69,7 @@ function App() {
                 }
               />
               <Route
-                path="/logout"
+                path="/app/logout"
                 element={
                   <PrivateRoute isValid={isAuthenticated}>
                     <Logout onLogoutSuccess={() => setIsAuthenticated(false)} />
@@ -90,10 +90,10 @@ function App() {
       ) : (
         <Routes>
           <Route
-            path="/login"
+            path="/app/login"
             element={<Login onLoginSuccess={() => setIsAuthenticated(true)} />}
           />
-          <Route path="*" element={<Navigate to="/login" />} />
+          <Route path="*" element={<Navigate to="/app/login" />} />
         </Routes>
       )}
     </BrowserRouter>
