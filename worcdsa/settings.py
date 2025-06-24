@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,6 +28,12 @@ SECRET_KEY = "django-insecure-2&cb*b%ovh&m7sszmx)k&)ap-j6(hjnn=q0m2+csf@loq#o4%w
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+#From https://github.com/heroku/python-getting-started/blob/main/gettingstarted/settings.py
+# The `DYNO` env var is set on Heroku CI, but it's not a real Heroku app, so we have to
+# also explicitly exclude CI:
+# https://devcenter.heroku.com/articles/heroku-ci#immutable-environment-variables
+IS_HEROKU_APP = "DYNO" in os.environ and "CI" not in os.environ
 
 
 # Application definition
@@ -83,15 +90,27 @@ WSGI_APPLICATION = "worcdsa.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "OPTIONS": {
-            "service": "membership_service",
-            "passfile": ".pgpass",
+if IS_HEROKU_APP:
+    DATABASES = {
+            "default": dj_database_url.config(
+                env="DATABASE_URL",
+                conn_max_age=600,
+                conn_health_checks=True,
+                ssl_require=True,
+            ),
+        }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "OPTIONS": {
+                "service": "membership_service",
+                "passfile": ".pgpass",
+            }
         }
     }
-}
+
+
 
 
 # Password validation
@@ -129,12 +148,22 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
-
-STATIC_URL = "/static/"
-
-#resolving heroku django.core.exceptions.ImproperlyConfigured
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_URL = "static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+#taken from Heroku example settings.py
+STORAGES = {
+    # Enable WhiteNoise's GZip (and Brotli, if installed) compression of static assets:
+    # https://whitenoise.readthedocs.io/en/latest/django.html#add-compression-and-caching-support
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+# Don't store the original (un-hashed filename) version of static files, to reduce slug size:
+# https://whitenoise.readthedocs.io/en/latest/django.html#WHITENOISE_KEEP_ONLY_HASHED_FILES
+WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 
 REST_FRAMEWORK = {
        'DEFAULT_AUTHENTICATION_CLASSES': (
