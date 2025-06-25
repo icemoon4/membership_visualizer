@@ -131,7 +131,7 @@ export default function MembersStats() {
         </div>
       </aside>
       <aside className={styles.chartAside}>
-        <h1>Area Chart of Membership Trends</h1>
+        <h2>Area Chart of Membership Trends</h2>
 
         <div className={styles.chartContainer}>
           <FilterChartForm
