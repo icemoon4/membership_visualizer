@@ -4,7 +4,7 @@ from io import StringIO
 
 from django.db import models, transaction
 
-from membership.models import Member, MembershipCount, Race
+from membership.models import UNION_CHOICES, Member, MembershipCount, Race
 from membership.serializers import MemberSerializer
 
 
@@ -90,20 +90,34 @@ class MemberImporter:
         older membership lists were structured differently. Convert the keys to the new format
         """
         updated_headers = {
-            "AK_ID": "actionkit_id",
-            "Address_Line_1": "address1",
-            "Address_Line_2": "address2",
-            "Mail_preference": "mailing_pref",
-            "Memb_status": "memb_status_letter",
+            "ak_id": "actionkit_id",
+            "address_line_1": "address1",
+            "address_line_2": "address2",
+            "mail_preference": "mailing_pref",
+            "memb_status": "memb_status_letter",
+            "billing_address1": "address1",
+            "billing_address_line_1": "address1",
+            "billing_address_line_2": "address2",
+            "billing_address2": "address2",
+            "billing_city": "city",
+            "billing_state": "state",
+            "billing_zip": "zip",
             "chapter": "dsa_chapter",
             "monthly_status": "monthly_dues_status",
+            "annual_recurring_dues_status": "yearly_dues_status",
         }
         deleted_columns = [
             "DSA_ID",
             "suffix",
+            "prefix",
             "Family_first_name",
             "Family_last_name",
             "Organization",
+            "Mailing_Address_Line_1",
+            "Mailing_Address_Line_2",
+            "Mailing_City",
+            "Mailing_State",
+            "Mailing_Zip",
         ]
         updated_csv = []
 
@@ -112,7 +126,7 @@ class MemberImporter:
             for key in row.keys():
                 if key not in deleted_columns:
                     val = row[key]
-                    key = updated_headers.get(key, key).lower()
+                    key = updated_headers.get(key.lower(), key).lower()
                     if key == "membership_status":
                         val = (
                             val.capitalize()
@@ -177,6 +191,31 @@ class MemberImporter:
             if not row.get("state"):
                 row["state"] = "MA"
 
+            # Old "choices" data was not cleaned very well
+            union = row.get("union_member")
+            if union.lower() == "no":
+                row["union_member"] = "No, not a union member"
+            elif union.lower() == "yes":
+                row["union_member"] = "Yes, current union member"
+            elif (union, union) not in UNION_CHOICES:
+                row["union_member"] = None
+
+            if not row.get("mailing_pref"):
+                row["mailing_pref"] = "Yes"
+
+            if row.get("membership_type") == "annual":
+                row["membership_type"] = "yearly"
+
+            if not row.get("membership_type"):
+                row["membership_type"] = "unknown"
+            if not row.get("monthly_dues_status"):
+                row["monthly_dues_status"] = "unknown"
+            if not row.get("yearly_dues_status"):
+                row["yearly_dues_status"] = "unknown"
+
+            if not row.get("list_date"):
+                row["list_date"] = self.list_date
+
             # Initialize serializer
             ak_id = row.get("actionkit_id")
             email = row.get("email")
@@ -220,7 +259,11 @@ class MemberImporter:
         Deletes any members which are in the DB but were not in the most recent membership list
         """
         rows = self.read_csv()
-        if self.list_date and self.list_date < datetime(2022, 4, 25).date(): # the date lists were converted to new format
+        # list format change: 4/25/2022
+        # modern list format: 9/29/2023
+        if (
+            self.list_date and self.list_date < datetime(2023, 9, 29).date()
+        ):  # the date lists were converted to new format
             rows = self.update_headers(rows)
         delete_ids = self.clean_and_deserialize_data(rows)
 
