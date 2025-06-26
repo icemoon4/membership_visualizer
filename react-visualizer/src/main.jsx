@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { IdleTimerProvider } from "react-idle-timer";
 
-const FIVE_MINUTES = 1000 * 60 * 5;
+const FIVE_MINUTES = 1000 * 5;
 
 const handleOnIdle = () => {
   console.log("User is idle");
