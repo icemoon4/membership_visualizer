@@ -59,7 +59,7 @@ function App() {
               <Route
                 path="/app/search"
                 element={
-                  <PrivateRoute isValid={isAuthenticated}>
+                  <PrivateRoute isValid={isAuthenticated} token={accessToken}>
                     <MembersList />
                   </PrivateRoute>
                 }
@@ -67,7 +67,7 @@ function App() {
               <Route
                 path="/app/statistics"
                 element={
-                  <PrivateRoute isValid={isAuthenticated}>
+                  <PrivateRoute isValid={isAuthenticated} token={accessToken}>
                     <MembersStats />
                   </PrivateRoute>
                 }
@@ -75,7 +75,7 @@ function App() {
               <Route
                 path="/app/members/:memberId"
                 element={
-                  <PrivateRoute isValid={isAuthenticated}>
+                  <PrivateRoute isValid={isAuthenticated} token={accessToken}>
                     <MemberPage />
                   </PrivateRoute>
                 }
@@ -83,7 +83,7 @@ function App() {
               <Route
                 path="/app/logout"
                 element={
-                  <PrivateRoute isValid={isAuthenticated}>
+                  <PrivateRoute isValid={isAuthenticated} token={accessToken}>
                     <Logout onLogoutSuccess={() => setIsAuthenticated(false)} />
                   </PrivateRoute>
                 }
@@ -91,7 +91,7 @@ function App() {
               <Route
                 path="*"
                 element={
-                  <PrivateRoute isValid={isAuthenticated}>
+                  <PrivateRoute isValid={isAuthenticated} token={accessToken}>
                     <PageNotFound />
                   </PrivateRoute>
                 }

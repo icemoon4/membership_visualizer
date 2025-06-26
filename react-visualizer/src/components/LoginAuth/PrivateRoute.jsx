@@ -1,8 +1,7 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 
-const PrivateRoute = ({ children, isValid }) => {
-  const token = localStorage.getItem("token");
+const PrivateRoute = ({ children, isValid, token }) => {
   if (!token || !isValid) {
     if (!token) {
       console.log("no token found");
