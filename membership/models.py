@@ -6,6 +6,10 @@ MEMBERSHIP_TYPES = (
     ("yearly", "Yearly"),
     ("monthly", "Monthly"),
     ("income-based", "Income-based"),
+    (
+        "unknown",
+        "Unknown",
+    ),  # not in National's DB, but there was a bug where this field was blank in lists for a while
 )
 DUES_STATUSES = (
     ("never", "Never"),
@@ -19,6 +23,7 @@ DUES_STATUSES = (
     ("canceled_by_admin", "Canceled by Admin"),
     ("canceled_by_processor", "Canceled by Processor"),
     ("canceled_by_user", "Canceled by User"),
+    ("unknown", "Unknown"),  # same issue as above
 )
 MEMBERSHIP_STATUSES = (
     ("Lapsed", "Lapsed"),
@@ -227,6 +232,7 @@ class Region(models.Model):
     """
 
     label = models.CharField(max_length=255, unique=True)
+    zip_code_list = models.TextField(blank=True)
 
     def __str__(self):
         return f"{self.label}"

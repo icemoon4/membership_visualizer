@@ -66,6 +66,7 @@ def member_list(request):
         return JsonResponse(members_serializer.data, safe=False)
     return JsonResponse([], safe=False)
 
+
 # reffed from here https://dev.to/akdevelop/django-react-login-how-to-setup-a-login-page-5dl8
 class LoginView(APIView):
        def post(self, request):

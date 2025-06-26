@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
+
 from datetime import timedelta
 from dotenv import load_dotenv
 
@@ -47,6 +48,11 @@ SESSION_COOKIE_AGE = 300  # seconds (5 minutes)
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_SAVE_EVERY_REQUEST = True
 
+ALLOWED_HOSTS = [
+    "127.0.0.1",  # Allow direct IP access on localhost
+    "localhost",  # Allow using localhost hostname
+]
+
 AXES_LOCKOUT_PARAMETERS = ["ip_address", ["username", "user_agent"]]
 AXES_COOLOFF_TIME = 2 #2 hours
 AXES_FAILURE_LIMIT = 5 #5 max failed login attempts
@@ -64,8 +70,10 @@ if IS_HEROKU_APP:
     USE_X_FORWARDED_HOST = True #because we're using Heroku, which forwards IPs
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+    ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
 
-# Application definition
+
+# Application definitn
 
 INSTALLED_APPS = [
     "membership.apps.MembershipConfig",
@@ -81,8 +89,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     "axes",
-    #'myapp', for some reason in the tut they had their own app listed; try this later
-    "simple_history",
+    "rest_framework_simplejwt",
 ]
 
 SIMPLE_JWT = {
@@ -146,6 +153,8 @@ if IS_HEROKU_APP:
             ),
         }
 else:
+    from dotenv import load_dotenv
+    load_dotenv()
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
@@ -156,7 +165,6 @@ else:
             "PORT": os.getenv("DB_PORT", "5432"),
             }
         }
-print("is this getting called at all")
 
 
 
@@ -217,10 +225,10 @@ STORAGES = {
 WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 
 REST_FRAMEWORK = {
-       'DEFAULT_AUTHENTICATION_CLASSES': (
-           'rest_framework_simplejwt.authentication.JWTAuthentication',
-       )
-   }
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    )
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
