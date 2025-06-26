@@ -95,3 +95,21 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("id", "username", "email")
+
+
+class MemberUpdateTrackerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Member.history.model
+        fields = (
+            "first_name",
+            "middle_name",
+            "last_name",
+            "email",
+            "best_phone",
+            "membership_type",
+            "monthly_dues_status",
+            "yearly_dues_status",
+            "membership_status",
+            "actionkit_id",
+        )
+        read_only_fields = fields
