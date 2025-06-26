@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
-from axes.decorators import axes_dispatch
+
 from .serializers import UserSerializer
 from django.core import serializers
 from django.http import JsonResponse
@@ -68,7 +68,6 @@ def member_list(request):
 
 # reffed from here https://dev.to/akdevelop/django-react-login-how-to-setup-a-login-page-5dl8
 class LoginView(APIView):
-       @axes_dispatch
        def post(self, request):
            username = request.data.get('username')
            password = request.data.get('password')

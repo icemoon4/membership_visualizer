@@ -1,10 +1,11 @@
 from django.urls import path, re_path
 from membership import views
 from membership.views import LoginView,ValidateTokenView, ValidateRefreshTokenView
+from axes.decorators import axes_dispatch
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path('api/login/', LoginView.as_view(), name='login'),
+    path('api/login/', axes_dispatch(LoginView.as_view()), name='login'),
     path('api/validate-token/', ValidateTokenView.as_view(), name='validate-token'),
     path('api/validate-refresh-token/', ValidateRefreshTokenView.as_view(), name='validate-refresh-token'),
     path("api/<int:member_id>/data", views.detail_json, name="details_json"),
