@@ -146,9 +146,7 @@ class Member(models.Model):
     notes = models.TextField(blank=True, null=True)
     do_not_text = models.BooleanField(default=False)
     do_not_email = models.BooleanField(default=False)
-    in_chapter = models.BooleanField(
-        default=True
-    )  # If member is removed from membership list, set to False
+    
     history = HistoricalRecords()
 
     def __str__(self):
