@@ -15,6 +15,10 @@ import os
 import dj_database_url
 
 from datetime import timedelta
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,10 +29,12 @@ os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY", "localhost")
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
+
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 #From https://github.com/heroku/python-getting-started/blob/main/gettingstarted/settings.py
 # The `DYNO` env var is set on Heroku CI, but it's not a real Heroku app, so we have to
@@ -51,7 +57,7 @@ AXES_LOCKOUT_PARAMETERS = ["ip_address", ["username", "user_agent"]]
 AXES_COOLOFF_TIME = 2 #2 hours
 AXES_FAILURE_LIMIT = 5 #5 max failed login attempts
 
-if IS_HEROKU_APP == "DYNO":
+if IS_HEROKU_APP:
     #since we're using heroku, we want to check for HTTP_X_FORWARDED_FOR first, then remote_addr
     AXES_IPWARE_META_PRECEDENCE_ORDER = [
         'HTTP_X_FORWARDED_FOR',
@@ -159,6 +165,7 @@ else:
             "PORT": os.getenv("DB_PORT", "5432"),
             }
         }
+
 
 
 # Password validation
