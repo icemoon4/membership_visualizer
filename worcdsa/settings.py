@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     #'myapp', for some reason in the tut they had their own app listed; try this later
     "simple_history",
 ]
