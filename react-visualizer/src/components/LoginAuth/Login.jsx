@@ -32,14 +32,19 @@ export default function Login({ onLoginSuccess }) {
       }
   );
       setError(null);
-      //console.log(response.data.access);
+      console.log(response.data.access);
       navigate("/app/search");
       onLoginSuccess();
-      //console.log("navigating");
+      console.log("navigating");
     } catch (error) {
-      console.error("Login failed:", error.response.data);
+      console.error("Login failed:", error);
+      const message =
+        error?.response?.data?.error ||
+        error?.response?.data?.detail ||
+        error?.message ||
+        "Login failed due to an unknown error.";
       axios.defaults.headers.common["Authorization"] = null;
-      setError(error.response.data["error"]);
+      setError(message);
       // Handle login error (e.g., show error message)
     }
   };
