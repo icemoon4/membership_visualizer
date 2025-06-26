@@ -3,15 +3,18 @@ import react from "@vitejs/plugin-react";
 import path from 'path'
 export default defineConfig({
   base: "/static/react/",
-  plugins: [react()],
+  plugins: [react(),
+    
+  ],
   resolve: {
     mainFields: [],
   },
   alias: {
     "@": "/src",
+    'axios': path.resolve(__dirname, 'node_modules/axios/index.js'),
   },
   optimizeDeps: {
-    exclude: ["react-google-charts"],
+    exclude: ["react-google-charts", 'stream', 'buffer'],
   },
   build: {
     outDir: path.resolve(__dirname, '../static/react'),

@@ -3,8 +3,10 @@ import styles from "../../App.module.css";
 import React, { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import LogoHeader from "../Nav/LogoHeader";
-import axios from "axios";
+import axios from 'redaxios';
+import Cookies from 'js-cookie';
 
+const csrfToken = Cookies.get('csrftoken');
 export default function Login({ onLoginSuccess }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -15,10 +17,18 @@ export default function Login({ onLoginSuccess }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/login/", {
+      const response = await axios.post("/api/login/",
+      {
         username,
         password,
-      });
+      },
+      {
+        headers: {
+          "X-CSRFToken": csrfToken,
+        },
+        withCredentials: true, //so we can send cookies
+      }
+  );
       setError(null);
       localStorage.setItem("token", response.data.access);
       //console.log(response.data.access);
