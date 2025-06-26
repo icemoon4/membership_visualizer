@@ -7,13 +7,11 @@ import axios from 'redaxios';
 import Cookies from 'js-cookie';
 
 
-export default function Login({ onLoginSuccess }) {
+export default function Login({ onLoginSuccess, setToken }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorDisplay, setError] = useState("");
   const navigate = useNavigate();
-  const csrfToken = Cookies.get('csrftoken');
-  console.log("hey help lol" + csrfToken)
   //in the future: this url here: https://medium.com/@preciousimoniakemu/create-a-react-login-page-that-authenticates-with-django-auth-token-8de489d2f751
   //I think this should take the branch name as a parameter a put it in the header
   const handleLogin = async (e) => {
@@ -32,7 +30,7 @@ export default function Login({ onLoginSuccess }) {
       }
   );
       setError(null);
-      console.log(response.data.access);
+      setToken(response.data.access);
       navigate("/app/search");
       onLoginSuccess();
       console.log("navigating");

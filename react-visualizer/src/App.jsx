@@ -103,7 +103,7 @@ function App() {
         <Routes>
           <Route
             path="/app/login"
-            element={<Login onLoginSuccess={() => setIsAuthenticated(true)} />}
+            element={<Login onLoginSuccess={() => setIsAuthenticated(true)} setToken={setAccessToken}/>}
           />
           <Route path="*" element={<Navigate to="/app/login" />} />
         </Routes>
