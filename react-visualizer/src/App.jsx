@@ -46,16 +46,13 @@ function App() {
     checkAuth();
   }, []);
 
-  useEffect(() => {
-  const handleIdleEvent = () => {
-    setAccessToken(null);
-    setRefreshToken(null);
-    setIsAuthenticated(false);
-    alert('Logged out due to inactivity');
-  };
-  window.addEventListener('user-idle', handleIdleEvent);
-  return () => window.removeEventListener('user-idle', handleIdleEvent);
-}, []);
+const FIVE_MINUTES = 1000 * 60 * 5;
+
+const handleOnIdle = () => {
+  setAccessToken(null);
+  setRefreshToken(null);
+  setIsAuthenticated(false);
+};
 
   if (loading) {
     return <div>Checking authentication...</div>;
@@ -70,9 +67,11 @@ function App() {
                 path="/app/search"
                 element={
                   <PrivateRoute isValid={isAuthenticated} token={accessToken}>
-                    <MembersProvider>
-                      <MembersList />
-                    </MembersProvider>
+                    <IdleTimerProvider timeout={FIVE_MINUTES} onIdle={handleOnIdle}>
+                      <MembersProvider>
+                        <MembersList />
+                      </MembersProvider>
+                    </IdleTimerProvider>
                   </PrivateRoute>
                 }
               />
@@ -80,9 +79,11 @@ function App() {
                 path="/app/statistics"
                 element={
                   <PrivateRoute isValid={isAuthenticated} token={accessToken}>
-                    <MembersProvider>
-                      <MembersStats />
-                    </MembersProvider>
+                    <IdleTimerProvider timeout={FIVE_MINUTES} onIdle={handleOnIdle}>
+                      <MembersProvider>
+                        <MembersStats />
+                      </MembersProvider>
+                    </IdleTimerProvider>
                   </PrivateRoute>
                 }
               />
@@ -90,9 +91,11 @@ function App() {
                 path="/app/members/:memberId"
                 element={
                   <PrivateRoute isValid={isAuthenticated} token={accessToken}>
-                    <MembersProvider>
-                      <MemberPage />
-                    </MembersProvider>
+                    <IdleTimerProvider timeout={FIVE_MINUTES} onIdle={handleOnIdle}>
+                      <MembersProvider>
+                        <MemberPage />
+                      </MembersProvider>
+                    </IdleTimerProvider>
                   </PrivateRoute>
                 }
               />
