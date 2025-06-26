@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
+from axes.decorators import axes_dispatch
 from .serializers import UserSerializer
 from django.core import serializers
 from django.http import JsonResponse
