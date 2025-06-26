@@ -1,18 +1,23 @@
 # import json
 from datetime import datetime
 
-from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate
+
+from .serializers import UserSerializer
 from django.core import serializers
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
-from rest_framework import status, viewsets
+from rest_framework import viewsets
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework_simplejwt.tokens import RefreshToken
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from membership.models import Member, MembershipCount
 from membership.serializers import (
@@ -21,22 +26,11 @@ from membership.serializers import (
     MemberUpdateTrackerSerializer,
 )
 
-from .serializers import UserSerializer
-
 
 # Create your views here.
+@ensure_csrf_cookie
 def index(request):
-    member_list = Member.objects.order_by("list_date")
-    context = {
-        "member_list": member_list,
-    }
-    return render(request, "index.html", context)
-
-
-@login_required(login_url="/accounts/login/")
-def detail(request, member_id):
-    member = get_object_or_404(Member, pk=member_id)
-    return render(request, "detail.html", {"member": member})
+    return render(request, "index.html")
 
 
 def detail_json(request, member_id):
@@ -163,23 +157,21 @@ def membership_updates(request, start_date: datetime.date, end_date: datetime.da
 
 # reffed from here https://dev.to/akdevelop/django-react-login-how-to-setup-a-login-page-5dl8
 class LoginView(APIView):
-    def post(self, request):
-        username = request.data.get("username")
-        password = request.data.get("password")
-        user = authenticate(username=username, password=password)
-        if user:
-            refresh = RefreshToken.for_user(user)
-            return Response(
-                {
-                    "refresh": str(refresh),
-                    "access": str(refresh.access_token),
-                    "user": UserSerializer(user).data,
-                }
-            )
-        return Response(
-            {"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
-        )
-
+       def post(self, request):
+           username = request.data.get('username')
+           password = request.data.get('password')
+           user = authenticate(request=request, username=username, password=password)
+           if not user:
+               raise AuthenticationFailed("Invalid credentials")
+           if user:
+                refresh = RefreshToken.for_user(user)
+                access_token = str(refresh.access_token)
+                res = Response({
+                    "access": access_token,
+                    "refresh": str(refresh)
+                })
+                return res
+            
 
 class ValidateTokenView(APIView):
     authentication_classes = [JWTAuthentication]
@@ -187,4 +179,18 @@ class ValidateTokenView(APIView):
 
     def get(self, request):
         # If the token is valid, return success
-        return Response({"message": "Token is valid"}, status=status.HTTP_200_OK)
+        return Response({'message': 'Token is valid'}, status=status.HTTP_200_OK)
+    
+class ValidateRefreshTokenView(APIView):
+    def post(self, request):
+        refresh_token = request.COOKIES.get('refresh_token')
+
+        if refresh_token is None:
+            return Response({'error': 'No refresh token'}, status=401)
+        
+        try:
+            refresh = RefreshToken(refresh_token)
+            access_token = str(refresh.access_token)
+            return Response({'access': access_token})
+        except TokenError:
+            return Response({'error': 'Invalid refresh token'}, status=401)

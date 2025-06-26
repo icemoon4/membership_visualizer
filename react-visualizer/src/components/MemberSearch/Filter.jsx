@@ -21,7 +21,7 @@ export default function Filter({ MemberList = [] }) {
   };
 
   const filteredMembers = MemberList.filter((member) => {
-    console.log(member);
+    //console.log(member);
     const fields = member.fields;
     let localParameters = { ...stateParameters }; //cloning parameters so we can switch things up when we come to dates
     const numOfParams = Object.keys(localParameters).length;
