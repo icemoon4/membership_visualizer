@@ -67,7 +67,7 @@ if IS_HEROKU_APP == "DYNO":
     ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
 
 
-# Application definition
+# Application definitn
 
 INSTALLED_APPS = [
     "membership.apps.MembershipConfig",
