@@ -16,7 +16,7 @@ import dj_database_url
 
 from datetime import timedelta
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Build paths insde the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
@@ -42,7 +42,11 @@ SESSION_COOKIE_AGE = 300  # seconds (5 minutes)
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_SAVE_EVERY_REQUEST = True
 
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+#For Heroku; comment out when we're running locally
+#ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+
+#When running locally
+ALLOWED_HOSTS = ["localhost", "127.0.0.1" ]
 
 AXES_LOCKOUT_PARAMETERS = ["ip_address", ["username", "user_agent"]]
 AXES_COOLOFF_TIME = 2 #2 hours
@@ -133,7 +137,7 @@ WSGI_APPLICATION = "worcdsa.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-if IS_HEROKU_APP:
+if IS_HEROKU_APP == "DYNO":
     DATABASES = {
             "default": dj_database_url.config(
                 env="DATABASE_URL",
@@ -229,6 +233,7 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
     "http://localhost:8081",
     "http://localhost:5173",
+    "http://localhost:8000"
 ]
 
 LOGIN_REDIRECT_URL = "/"
