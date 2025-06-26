@@ -47,6 +47,7 @@ function App() {
   useEffect(() => {
   const handleIdleEvent = () => {
     setAccessToken(null);
+    isAuthenticated(false);cd
     alert('Logged out due to inactivity');
   };
   window.addEventListener('user-idle', handleIdleEvent);
