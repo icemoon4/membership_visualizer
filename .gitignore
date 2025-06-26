@@ -3,6 +3,7 @@ uploads/
 backups/
 .pg_service.conf
 .pgpass
+.env
 
 # Logs
 logs
