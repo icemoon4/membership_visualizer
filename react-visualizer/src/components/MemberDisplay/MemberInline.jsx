@@ -5,7 +5,7 @@ export default function Member({ memberId, fields }) {
   return (
     <div className={styles.memberCard}>
       <Link
-        to={`/members/${memberId}`}
+        to={`/app/members/${memberId}`}
         state={{ memberFields: fields }}
         className={styles.memberTitle}
       >

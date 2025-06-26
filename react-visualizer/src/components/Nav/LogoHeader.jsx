@@ -1,8 +1,9 @@
 import styles from "./logoHeader.module.css";
+import headerLogo from "../../assets/headerlogo-400x400.png";
 export default function LogoHeader() {
   return (
     <header className={styles.logoHeader}>
-      <img src="\src\assets\headerlogo-400x400.png" />
+      <img src={headerLogo} />
       <h2>
         DSA <br />
         Membership

@@ -11,24 +11,63 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+import dj_database_url
+
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-2&cb*b%ovh&m7sszmx)k&)ap-j6(hjnn=q0m2+csf@loq#o4%w"
+SECRET_KEY = os.getenv("SECRET_KEY", "localhost")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+#From https://github.com/heroku/python-getting-started/blob/main/gettingstarted/settings.py
+# The `DYNO` env var is set on Heroku CI, but it's not a real Heroku app, so we have to
+# also explicitly exclude CI:
+# https://devcenter.heroku.com/articles/heroku-ci#immutable-environment-variables
+IS_HEROKU_APP = "DYNO" in os.environ and "CI" not in os.environ
 
 
-# Application definition
+# Session will expire after 5 minutes of inactivity
+SESSION_COOKIE_AGE = 300  # seconds (5 minutes)
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_SAVE_EVERY_REQUEST = True
+
+ALLOWED_HOSTS = [
+    "127.0.0.1",  # Allow direct IP access on localhost
+    "localhost",  # Allow using localhost hostname
+]
+
+AXES_LOCKOUT_PARAMETERS = ["ip_address", ["username", "user_agent"]]
+AXES_COOLOFF_TIME = 2 #2 hours
+AXES_FAILURE_LIMIT = 5 #5 max failed login attempts
+
+if IS_HEROKU_APP == "DYNO":
+    #since we're using heroku, we want to check for HTTP_X_FORWARDED_FOR first, then remote_addr
+    AXES_IPWARE_META_PRECEDENCE_ORDER = [
+        'HTTP_X_FORWARDED_FOR',
+        'REMOTE_ADDR',
+    ]
+
+    AXES_IPWARE_PROXY_ORDER = AXES_IPWARE_META_PRECEDENCE_ORDER #use the order we set up
+    AXES_IPWARE_PROXY_COUNT = 1 #trust the first IP in X_FORWARDED< which on heroku is always the client's IP
+
+    USE_X_FORWARDED_HOST = True #because we're using Heroku, which forwards IPs
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+    ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
+
+
+# Application definitn
 
 INSTALLED_APPS = [
     "membership.apps.MembershipConfig",
@@ -41,12 +80,27 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
+    "axes",
     "rest_framework_simplejwt",
-    #'myapp', for some reason in the tut they had their own app listed; try this later
-    "simple_history",
+]
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+AUTHENTICATION_BACKENDS = [
+   'axes.backends.AxesBackend', # Axes must be first
+   'django.contrib.auth.backends.ModelBackend',
 ]
 
 MIDDLEWARE = [
+    "axes.middleware.AxesMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -54,6 +108,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
 ]
@@ -82,15 +137,28 @@ WSGI_APPLICATION = "worcdsa.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "OPTIONS": {
-            "service": "memerbship_service",
-            "passfile": ".pgpass",
-        },
-    }
-}
+if IS_HEROKU_APP:
+    DATABASES = {
+            "default": dj_database_url.config(
+                env="DATABASE_URL",
+                conn_max_age=600,
+                conn_health_checks=True,
+                ssl_require=True,
+            ),
+        }
+else:
+    from dotenv import load_dotenv
+    load_dotenv()
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("DB_NAME"),
+            "USER": os.getenv("DB_USER"),
+            "PASSWORD": os.getenv("DB_PASSWORD"),
+            "HOST": os.getenv("DB_HOST", "localhost"),
+            "PORT": os.getenv("DB_PORT", "5432"),
+            }
+        }
 
 
 # Password validation
@@ -128,8 +196,26 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_URL = "static/"
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-STATIC_URL = "/static/"
+#taken from Heroku example settings.py
+STORAGES = {
+    # Enable WhiteNoise's GZip (and Brotli, if installed) compression of static assets:
+    # https://whitenoise.readthedocs.io/en/latest/django.html#add-compression-and-caching-support
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+    # For handling uploaded media files
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+}
+
+# Don't store the original (un-hashed filename) version of static files, to reduce slug size:
+# https://whitenoise.readthedocs.io/en/latest/django.html#WHITENOISE_KEEP_ONLY_HASHED_FILES
+WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (

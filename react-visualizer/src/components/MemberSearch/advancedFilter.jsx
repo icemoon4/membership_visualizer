@@ -147,7 +147,7 @@ export default function advancedFilter({ setStateParameters, isVisible }) {
       ...prevParams,
       [key]: value,
     }));
-    console.log(currentParameters);
+    //console.log(currentParameters);
   }
 
   function handleSubmit(e) {

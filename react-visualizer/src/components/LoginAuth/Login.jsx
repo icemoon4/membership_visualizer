@@ -3,32 +3,49 @@ import styles from "../../App.module.css";
 import React, { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import LogoHeader from "../Nav/LogoHeader";
-import axios from "axios";
+import axios from 'redaxios';
+import Cookies from 'js-cookie';
 
-export default function Login({ onLoginSuccess }) {
+
+export default function Login({ onLoginSuccess, setAccessToken, setRefreshToken }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorDisplay, setError] = useState("");
   const navigate = useNavigate();
+  const csrfToken = Cookies.get('csrftoken');
   //in the future: this url here: https://medium.com/@preciousimoniakemu/create-a-react-login-page-that-authenticates-with-django-auth-token-8de489d2f751
   //I think this should take the branch name as a parameter a put it in the header
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8000/api/login/", {
+      const response = await axios.post("/api/login/",
+      {
         username,
         password,
-      });
+      },
+      {
+        headers: {
+          "X-CSRFToken": csrfToken,
+        },
+        withCredentials: true, //so we can send cookies
+      }
+  );
       setError(null);
-      localStorage.setItem("token", response.data.access);
-      console.log(response.data.access);
-      navigate("/search");
+      setAccessToken(response.data.access);
+      setRefreshToken(response.data.refresh);
+      navigate("/app/search");
       onLoginSuccess();
       console.log("navigating");
     } catch (error) {
-      console.error("Login failed:", error.response.data);
-      axios.defaults.headers.common["Authorization"] = null;
-      setError(error.response.data["error"]);
+      console.error("Login failed:", error);
+      const message =
+        error?.data?.error ||
+        error?.data?.detail ||
+        error?.message ||
+        error?.data ||
+        "Login failed due to an unknown error.";
+      //axios.defaults.headers.common["Authorization"] = null;
+      setError(message);
       // Handle login error (e.g., show error message)
     }
   };

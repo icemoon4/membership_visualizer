@@ -12,18 +12,44 @@ import MemberPage from "./components/MemberDisplay/MemberPage";
 import { MembersProvider } from "./components/MembersContext.jsx";
 import { validateToken } from "./components/LoginAuth/validateToken";
 import PrivateRoute from "./components/LoginAuth/PrivateRoute";
+import axios from "redaxios";
+import { IdleTimerProvider } from "react-idle-timer";
 
 function App() {
   //add a check for login state that returns only the login page here
   const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const [accessToken, setAccessToken] = useState(null);
+  const [refreshToken, setRefreshToken] = useState(null);
   const [loading, setLoading] = useState(true); // Loading state for validation
   useEffect(() => {
     const checkAuth = async () => {
-      const token = localStorage.getItem("token");
+      let token = accessToken;
+      if (!token) {
+        //new session? check for refresh cookie
+        try {
+          const response = await axios.post(
+            "api/validate-refresh-token/",
+            {},
+            { withCredentials: true }
+          );
+          token = response.data.access;
+          setAccessToken(token);
+        } catch (err) {
+          console.log(
+            "Token refresh failed:",
+            err.response?.data || err.message
+          );
+        }
+      }
+      //did we get a token? let's validate it
       if (token) {
-        const isValid = await validateToken(token);
+        const isValid = await validateToken(
+          token,
+          refreshToken,
+          setRefreshToken,
+          setAccessToken
+        );
         setIsAuthenticated(isValid);
-        if (!isValid) localStorage.removeItem("token"); //clear the invalid token
       } else {
         setIsAuthenticated(false);
       }
@@ -33,69 +59,88 @@ function App() {
     checkAuth();
   }, []);
 
+  const FIVE_MINUTES = 1000 * 60 * 5;
+
+  const handleOnIdle = () => {
+    setAccessToken(null);
+    setRefreshToken(null);
+    setIsAuthenticated(false);
+  };
+
   if (loading) {
     return <div>Checking authentication...</div>;
   }
 
   return (
     <BrowserRouter>
-      {isAuthenticated ? (
-        <>
-          <Nav />
-          <MembersProvider>
-            <Routes>
-              <Route
-                path="/search"
-                element={
-                  <PrivateRoute isValid={isAuthenticated}>
-                    <MembersList />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/statistics"
-                element={
-                  <PrivateRoute isValid={isAuthenticated}>
-                    <MembersStats />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/members/:memberId"
-                element={
-                  <PrivateRoute isValid={isAuthenticated}>
-                    <MemberPage />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/logout"
-                element={
-                  <PrivateRoute isValid={isAuthenticated}>
-                    <Logout onLogoutSuccess={() => setIsAuthenticated(false)} />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="*"
-                element={
-                  <PrivateRoute isValid={isAuthenticated}>
-                    <PageNotFound />
-                  </PrivateRoute>
-                }
-              />
-            </Routes>
-          </MembersProvider>
-        </>
-      ) : (
-        <Routes>
-          <Route
-            path="/login"
-            element={<Login onLoginSuccess={() => setIsAuthenticated(true)} />}
-          />
-          <Route path="*" element={<Navigate to="/login" />} />
-        </Routes>
-      )}
+      {isAuthenticated && <Nav />}
+      <Routes>
+        <Route path="/" element={<Navigate to="/app/search" replace />} />
+        <Route
+          path="/app/search"
+          element={
+            <PrivateRoute isValid={isAuthenticated} token={accessToken}>
+              <IdleTimerProvider timeout={FIVE_MINUTES} onIdle={handleOnIdle}>
+                <MembersProvider>
+                  <MembersList />
+                </MembersProvider>
+              </IdleTimerProvider>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/app/statistics"
+          element={
+            <PrivateRoute isValid={isAuthenticated} token={accessToken}>
+              <IdleTimerProvider timeout={FIVE_MINUTES} onIdle={handleOnIdle}>
+                <MembersProvider>
+                  <MembersStats />
+                </MembersProvider>
+              </IdleTimerProvider>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/app/members/:memberId"
+          element={
+            <PrivateRoute isValid={isAuthenticated} token={accessToken}>
+              <IdleTimerProvider timeout={FIVE_MINUTES} onIdle={handleOnIdle}>
+                <MembersProvider>
+                  <MemberPage />
+                </MembersProvider>
+              </IdleTimerProvider>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/app/logout"
+          element={
+            <PrivateRoute isValid={isAuthenticated} token={accessToken}>
+              <Logout onLogoutSuccess={() => setIsAuthenticated(false)} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/app/login"
+          element={
+            <Login
+              onLoginSuccess={() => setIsAuthenticated(true)}
+              setAccessToken={setAccessToken}
+              setRefreshToken={setRefreshToken}
+            />
+          }
+        />
+        <Route
+          path="*"
+          element={
+            isAuthenticated ? (
+              <PageNotFound />
+            ) : (
+              <Navigate to="/app/login" replace />
+            )
+          }
+        />
+      </Routes>
     </BrowserRouter>
   );
 }

@@ -18,7 +18,7 @@ export default function MembersStats() {
   useEffect(() => {
     async function fetchMembershipCount() {
       try {
-        const res = await fetch(`http://localhost:8000/api/membership_counts/`);
+        const res = await fetch(`/api/membership_counts/`);
         const data = await res.json();
         setCounts(data);
       } catch (error) {
@@ -131,7 +131,7 @@ export default function MembersStats() {
         </div>
       </aside>
       <aside className={styles.chartAside}>
-        <h1>Area Chart of Membership Trends</h1>
+        <h2>Area Chart of Membership Trends</h2>
 
         <div className={styles.chartContainer}>
           <FilterChartForm
