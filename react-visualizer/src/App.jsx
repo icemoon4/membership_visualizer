@@ -65,7 +65,6 @@ function App() {
     <BrowserRouter>
       {isAuthenticated && <Nav />}
         <Routes>
-          <Nav />
               <Route path="/" element={<Navigate to="/app/search" replace />} />
               <Route
                 path="/app/search"
@@ -97,22 +96,22 @@ function App() {
                   </PrivateRoute>
                 }
               />
-              <Route
-                path="/app/logout"
-                element={
-                  <PrivateRoute isValid={isAuthenticated} token={accessToken}>
-                    <Logout onLogoutSuccess={() => setIsAuthenticated(false)} />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="*"
-                  element={isAuthenticated ? (<PageNotFound />) : (<Navigate to="/app/login" replace />)}
-              />
+            <Route
+              path="/app/logout"
+              element={
+                <PrivateRoute isValid={isAuthenticated} token={accessToken}>
+                  <Logout onLogoutSuccess={() => setIsAuthenticated(false)} />
+                </PrivateRoute>
+              }
+            />
           <Route
             path="/app/login"
             element={<Login onLoginSuccess={() => setIsAuthenticated(true)} setAccessToken={setAccessToken} setRefreshToken={setRefreshToken}/>}
           />
+          <Route
+                path="*"
+                  element={isAuthenticated ? (<PageNotFound />) : (<Navigate to="/app/login" replace />)}
+              />
         </Routes>
     </BrowserRouter>
   );
