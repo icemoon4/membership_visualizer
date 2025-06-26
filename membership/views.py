@@ -65,8 +65,8 @@ def member_list(request):
     return JsonResponse([], safe=False)
 
 # reffed from here https://dev.to/akdevelop/django-react-login-how-to-setup-a-login-page-5dl8
-@axes_dispatch
 class LoginView(APIView):
+       @axes_dispatch
        def post(self, request):
            username = request.data.get('username')
            password = request.data.get('password')
