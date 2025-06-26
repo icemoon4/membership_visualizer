@@ -16,14 +16,25 @@ import PrivateRoute from "./components/LoginAuth/PrivateRoute";
 function App() {
   //add a check for login state that returns only the login page here
   const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const [accessToken, setAccessToken] = useState(null)
   const [loading, setLoading] = useState(true); // Loading state for validation
   useEffect(() => {
     const checkAuth = async () => {
-      const token = localStorage.getItem("token");
+      let token = accessToken;
+      if (!token) { //new session? check for refresh cookie
+        try {
+          const response = await axios.post("api/validate-refresh-token/", {}, { withCredentials: true });
+          token = response.data.access;
+          setAccessToken(token);
+        }
+        catch (err) {
+          console.log("Token refresh failed:", err.response?.data || err.message);
+        }
+      }
+      //did we get a token? let's validate it
       if (token) {
-        const isValid = await validateToken(token);
+        const isValid = await validateToken(accessToken, setAccessToken);
         setIsAuthenticated(isValid);
-        if (!isValid) localStorage.removeItem("token"); //clear the invalid token
       } else {
         setIsAuthenticated(false);
       }
