@@ -13,9 +13,10 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
+
 from datetime import timedelta
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Build paths insde the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
@@ -27,9 +28,7 @@ os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 SECRET_KEY = os.getenv("SECRET_KEY", "localhost")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
+DEBUG = False
 
 #From https://github.com/heroku/python-getting-started/blob/main/gettingstarted/settings.py
 # The `DYNO` env var is set on Heroku CI, but it's not a real Heroku app, so we have to
@@ -41,6 +40,12 @@ IS_HEROKU_APP = "DYNO" in os.environ and "CI" not in os.environ
 SESSION_COOKIE_AGE = 300  # seconds (5 minutes)
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_SAVE_EVERY_REQUEST = True
+
+#For Heroku; comment out when we're running locally
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+
+#When running locally
+#ALLOWED_HOSTS = ["localhost", "127.0.0.1" ]
 
 AXES_LOCKOUT_PARAMETERS = ["ip_address", ["username", "user_agent"]]
 AXES_COOLOFF_TIME = 2 #2 hours
@@ -60,7 +65,7 @@ if IS_HEROKU_APP:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
-# Application definition
+# Application definitn
 
 INSTALLED_APPS = [
     "membership.apps.MembershipConfig",
@@ -131,7 +136,7 @@ WSGI_APPLICATION = "worcdsa.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-if IS_HEROKU_APP:
+if IS_HEROKU_APP == "DYNO":
     DATABASES = {
             "default": dj_database_url.config(
                 env="DATABASE_URL",
@@ -141,16 +146,18 @@ if IS_HEROKU_APP:
             ),
         }
 else:
+    from dotenv import load_dotenv
+    load_dotenv()
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "OPTIONS": {
-                "service": "membership_service",
-                "passfile": ".pgpass",
+            "NAME": os.getenv("DB_NAME"),
+            "USER": os.getenv("DB_USER"),
+            "PASSWORD": os.getenv("DB_PASSWORD"),
+            "HOST": os.getenv("DB_HOST", "localhost"),
+            "PORT": os.getenv("DB_PORT", "5432"),
             }
         }
-    }
-
 
 
 
@@ -225,6 +232,7 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
     "http://localhost:8081",
     "http://localhost:5173",
+    "http://localhost:8000"
 ]
 
 LOGIN_REDIRECT_URL = "/"
