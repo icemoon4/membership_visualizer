@@ -50,7 +50,7 @@ function App() {
   const handleIdleEvent = () => {
     setAccessToken(null);
     setRefreshToken(null);
-    isAuthenticated(false);
+    setIsAuthenticated(false);
     alert('Logged out due to inactivity');
   };
   window.addEventListener('user-idle', handleIdleEvent);
