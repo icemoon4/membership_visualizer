@@ -43,7 +43,7 @@ export default function Login({ onLoginSuccess, setAccessToken, setRefreshToken 
         error?.response?.data?.detail ||
         error?.message ||
         "Login failed due to an unknown error.";
-      axios.defaults.headers.common["Authorization"] = null;
+      //axios.defaults.headers.common["Authorization"] = null;
       setError(message);
       // Handle login error (e.g., show error message)
     }
