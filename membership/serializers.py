@@ -1,8 +1,7 @@
-from rest_framework import serializers
-from simple_history.utils import bulk_update_with_history
-
-from membership.models import Member, MembershipCount
 from django.contrib.auth.models import User
+from rest_framework import serializers
+
+from membership.models import Member, MembershipCount, Region
 
 
 class MemberSerializer(serializers.ModelSerializer):
@@ -56,11 +55,21 @@ class MemberSerializer(serializers.ModelSerializer):
             instance.race.add(item)
         return instance
 
+    def _assign_subregion(self, instance: Member):
+        zip_code = instance.zip[0:5] if instance.zip else None
+        if not instance.region.exists():
+            region = Region.objects.filter(zip_code_list__contains=zip_code).first()
+            if region:
+                instance.region.add(region)
+
+        return instance
+
     def create(self, validated_data: dict):
         race = validated_data.pop("race")
         instance = Member.objects.create(**validated_data)
+        instance = self._process_m2m_data(instance, race)
 
-        return self._process_m2m_data(instance, race)
+        return self._assign_subregion(instance)
 
     def update(self, instance: Member, validated_data: dict):
         race = validated_data.pop("race")
@@ -70,7 +79,9 @@ class MemberSerializer(serializers.ModelSerializer):
         members.update(**validated_data)
         members.first().save()  # there's only one record, doing this so it saves the history
 
-        return self._process_m2m_data(instance, race)
+        instance = self._process_m2m_data(instance, race)
+
+        return self._assign_subregion(instance)
 
 
 class MembershipCountSerializer(serializers.ModelSerializer):
@@ -79,7 +90,7 @@ class MembershipCountSerializer(serializers.ModelSerializer):
         fields = "__all__"  # Serialize all fields in MembershipCount
 
 
-#taken from here https://dev.to/akdevelop/django-react-login-how-to-setup-a-login-page-5dl8
+# taken from here https://dev.to/akdevelop/django-react-login-how-to-setup-a-login-page-5dl8
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

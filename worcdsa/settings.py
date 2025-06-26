@@ -83,8 +83,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     "axes",
-    #'myapp', for some reason in the tut they had their own app listed; try this later
-    "simple_history",
+    "rest_framework_simplejwt",
 ]
 
 SIMPLE_JWT = {
@@ -162,7 +161,6 @@ else:
         }
 
 
-
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -220,10 +218,10 @@ STORAGES = {
 WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 
 REST_FRAMEWORK = {
-       'DEFAULT_AUTHENTICATION_CLASSES': (
-           'rest_framework_simplejwt.authentication.JWTAuthentication',
-       )
-   }
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    )
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
