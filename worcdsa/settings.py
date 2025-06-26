@@ -47,7 +47,7 @@ AXES_LOCKOUT_PARAMETERS = ["ip_address", ["username", "user_agent"]]
 AXES_COOLOFF_TIME = 2 #2 hours
 AXES_FAILURE_LIMIT = 5 #5 max failed login attempts
 
-if IS_HEROKU_APP == "DYNO":
+if IS_HEROKU_APP:
     #since we're using heroku, we want to check for HTTP_X_FORWARDED_FOR first, then remote_addr
     AXES_IPWARE_META_PRECEDENCE_ORDER = [
         'HTTP_X_FORWARDED_FOR',
