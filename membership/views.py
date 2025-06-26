@@ -1,5 +1,6 @@
 # import json
 from datetime import datetime
+
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
@@ -14,7 +15,11 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from membership.models import Member, MembershipCount
-from membership.serializers import MemberSerializer, MembershipCountSerializer, MemberUpdateTrackerSerializer
+from membership.serializers import (
+    MemberSerializer,
+    MembershipCountSerializer,
+    MemberUpdateTrackerSerializer,
+)
 
 from .serializers import UserSerializer
 
@@ -74,12 +79,12 @@ def member_list(request):
     return JsonResponse([], safe=False)
 
 
-def group_data(data: list, key = "actionkit_id"):
+def group_data(data: list, key="actionkit_id"):
     sorted_data = {}
     for row in data:
         key_val = row.get(key)
         sorted_data[key_val] = row
-    
+
     return sorted_data
 
 
@@ -100,40 +105,58 @@ def membership_updates(request, start_date: datetime.date, end_date: datetime.da
             "membership_status",
         )
         # Get the historical data for the closest list date to the 2 given dates
-        list_date_start = Member.history.filter(list_date__gte=start_date).earliest("list_date").list_date
-        start_date_members = Member.history.filter(list_date=list_date_start).order_by("first_name", "last_name", "join_date")
-        list_date_end = Member.history.filter(list_date__lte=end_date).latest("list_date").list_date
-        end_date_members = Member.history.filter(list_date=list_date_end).order_by("first_name", "last_name", "join_date")
-        
+        list_date_start = (
+            Member.history.filter(list_date__gte=start_date)
+            .earliest("list_date")
+            .list_date
+        )
+        start_date_members = Member.history.filter(list_date=list_date_start).order_by(
+            "first_name", "last_name", "join_date"
+        )
+        list_date_end = (
+            Member.history.filter(list_date__lte=end_date).latest("list_date").list_date
+        )
+        end_date_members = Member.history.filter(list_date=list_date_end).order_by(
+            "first_name", "last_name", "join_date"
+        )
+
         # Serialized data, turn into dicts by actionkit_id so we can easily grab like-rows
         old_data = MemberUpdateTrackerSerializer(start_date_members, many=True).data
         old_data = group_data(old_data)
         new_data = MemberUpdateTrackerSerializer(end_date_members, many=True).data
         new_data = group_data(new_data)
-        
+
         new_values = {}
         updated_values = {}
         deleted_values = {}
-        
+
         for ak_id, new_row in new_data.items():
             if ak_id in old_data:
                 old_row = old_data.pop(ak_id)  # remove from old list
-                
+
                 for field in fields_to_compare:
                     old_val = old_row.get(field)
                     new_val = new_row.get(field)
-                    if old_val != new_val:  # if not equal, then they changed. Log the change
+                    if (
+                        old_val != new_val
+                    ):  # if not equal, then they changed. Log the change
                         if ak_id not in updated_values:
-                            updated_values[ak_id] = {"current_values": new_row, "updated_values": {}}
-                        updated_values[ak_id]["updated_values"][field] = (old_val, new_val)
+                            updated_values[ak_id] = {
+                                "current_values": new_row,
+                                "updated_values": {},
+                            }
+                        updated_values[ak_id]["updated_values"][field] = (
+                            old_val,
+                            new_val,
+                        )
             else:
                 # if ak_id isnt in old data, it's a new addition
                 new_values[ak_id] = new_row
-        
+
         for ak_id, old_row in old_data.items():
             # any leftover rows were removed from the new file
             deleted_values[ak_id] = old_row
-    
+
         return new_values, updated_values, deleted_values
     return {}, {}, {}
 
