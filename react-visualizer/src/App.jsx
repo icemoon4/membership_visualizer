@@ -63,17 +63,17 @@ function App() {
 
   return (
     <BrowserRouter>
-      {isAuthenticated ? (
-        <>
+      {isAuthenticated && <Nav />}
+        <Routes>
           <Nav />
-          <MembersProvider>
-            <Routes>
               <Route path="/" element={<Navigate to="/app/search" replace />} />
               <Route
                 path="/app/search"
                 element={
                   <PrivateRoute isValid={isAuthenticated} token={accessToken}>
-                    <MembersList />
+                    <MembersProvider>
+                      <MembersList />
+                    </MembersProvider>
                   </PrivateRoute>
                 }
               />
@@ -81,7 +81,9 @@ function App() {
                 path="/app/statistics"
                 element={
                   <PrivateRoute isValid={isAuthenticated} token={accessToken}>
-                    <MembersStats />
+                    <MembersProvider>
+                      <MembersStats />
+                    </MembersProvider>
                   </PrivateRoute>
                 }
               />
@@ -89,7 +91,9 @@ function App() {
                 path="/app/members/:memberId"
                 element={
                   <PrivateRoute isValid={isAuthenticated} token={accessToken}>
-                    <MemberPage />
+                    <MembersProvider>
+                      <MemberPage />
+                    </MembersProvider>
                   </PrivateRoute>
                 }
               />
@@ -103,24 +107,13 @@ function App() {
               />
               <Route
                 path="*"
-                element={
-                  <PrivateRoute isValid={isAuthenticated} token={accessToken}>
-                    <PageNotFound />
-                  </PrivateRoute>
-                }
+                  element={isAuthenticated ? (<PageNotFound />) : (<Navigate to="/app/login" replace />)}
               />
-            </Routes>
-          </MembersProvider>
-        </>
-      ) : (
-        <Routes>
           <Route
             path="/app/login"
             element={<Login onLoginSuccess={() => setIsAuthenticated(true)} setAccessToken={setAccessToken} setRefreshToken={setRefreshToken}/>}
           />
-          <Route path="*" element={<Navigate to="/app/login" />} />
         </Routes>
-      )}
     </BrowserRouter>
   );
 }
