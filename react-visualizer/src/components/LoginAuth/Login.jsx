@@ -39,8 +39,8 @@ export default function Login({ onLoginSuccess, setAccessToken, setRefreshToken 
     } catch (error) {
       console.error("Login failed:", error);
       const message =
-        error?.response?.data?.error ||
-        error?.response?.data?.detail ||
+        error?.data?.error ||
+        error?.data?.detail ||
         error?.message ||
         "Login failed due to an unknown error.";
       //axios.defaults.headers.common["Authorization"] = null;
