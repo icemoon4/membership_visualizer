@@ -44,6 +44,15 @@ function App() {
     checkAuth();
   }, []);
 
+  useEffect(() => {
+  const handleIdleEvent = () => {
+    setAccessToken(null);
+    alert('Logged out due to inactivity');
+  };
+  window.addEventListener('user-idle', handleIdleEvent);
+  return () => window.removeEventListener('user-idle', handleIdleEvent);
+}, []);
+
   if (loading) {
     return <div>Checking authentication...</div>;
   }
