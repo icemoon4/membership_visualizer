@@ -76,7 +76,10 @@ class LoginView(APIView):
                raise AuthenticationFailed("Invalid credentials")
            if user:
                 refresh = RefreshToken.for_user(user)
-                res = Response()
+                access_token = str(refresh.access_token)
+                res = Response({
+                    "access": access_token,
+                })
                 res.set_cookie(
                     key='refresh_token',
                     value=str(refresh),
@@ -84,9 +87,6 @@ class LoginView(APIView):
                     secure=True, # Ensure HTTPS
                     samesite='Strict',
                 )
-                res.data = {
-                    "access": str(refresh.access_token),
-                }
                 return res
             
 

@@ -33,7 +33,7 @@ function App() {
       }
       //did we get a token? let's validate it
       if (token) {
-        const isValid = await validateToken(accessToken, setAccessToken);
+        const isValid = await validateToken(token, setAccessToken);
         setIsAuthenticated(isValid);
       } else {
         setIsAuthenticated(false);
