@@ -12,6 +12,7 @@ export default function Login({ onLoginSuccess, setToken }) {
   const [password, setPassword] = useState("");
   const [errorDisplay, setError] = useState("");
   const navigate = useNavigate();
+  const csrfToken = Cookies.get('csrftoken');
   //in the future: this url here: https://medium.com/@preciousimoniakemu/create-a-react-login-page-that-authenticates-with-django-auth-token-8de489d2f751
   //I think this should take the branch name as a parameter a put it in the header
   const handleLogin = async (e) => {
