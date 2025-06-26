@@ -12,6 +12,7 @@ import MemberPage from "./components/MemberDisplay/MemberPage";
 import { MembersProvider } from "./components/MembersContext.jsx";
 import { validateToken } from "./components/LoginAuth/validateToken";
 import PrivateRoute from "./components/LoginAuth/PrivateRoute";
+import axios from 'redaxios';
 
 function App() {
   //add a check for login state that returns only the login page here
@@ -47,7 +48,7 @@ function App() {
   useEffect(() => {
   const handleIdleEvent = () => {
     setAccessToken(null);
-    isAuthenticated(false);cd
+    isAuthenticated(false);
     alert('Logged out due to inactivity');
   };
   window.addEventListener('user-idle', handleIdleEvent);

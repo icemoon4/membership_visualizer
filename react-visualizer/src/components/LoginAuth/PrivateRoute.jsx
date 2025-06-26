@@ -9,7 +9,7 @@ const PrivateRoute = ({ children, isValid, token }) => {
     if (!isValid) {
       console.log("invalid token");
     }
-    return <Navigate to="/login" />;
+    return <Navigate to="/app/login" />;
   }
   return children;
 };
