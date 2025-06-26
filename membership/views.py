@@ -71,11 +71,7 @@ class LoginView(APIView):
            username = request.data.get('username')
            password = request.data.get('password')
            user = authenticate(request=request, username=username, password=password)
-
-           if is_already_locked(request, credentials={'username': username}):
-                raise PermissionDenied("Account locked: too many login attempts.")
            if not user:
-               log_failure(request, credentials={'username': username})
                raise AuthenticationFailed("Invalid credentials")
            if user:
                 refresh = RefreshToken.for_user(user)
