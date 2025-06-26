@@ -9,7 +9,6 @@ from .serializers import UserSerializer
 from django.core import serializers
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
-from axes.helpers import log_failure, is_already_locked
 from rest_framework import viewsets
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.decorators import api_view
