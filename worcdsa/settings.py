@@ -37,7 +37,6 @@ ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
 # https://devcenter.heroku.com/articles/heroku-ci#immutable-environment-variables
 IS_HEROKU_APP = "DYNO" in os.environ and "CI" not in os.environ
 
-
 # Session will expire after 5 minutes of inactivity
 SESSION_COOKIE_AGE = 300  # seconds (5 minutes)
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
@@ -47,7 +46,7 @@ AXES_LOCKOUT_PARAMETERS = ["ip_address", ["username", "user_agent"]]
 AXES_COOLOFF_TIME = 2 #2 hours
 AXES_FAILURE_LIMIT = 5 #5 max failed login attempts
 
-if IS_HEROKU_APP == "DYNO":
+if IS_HEROKU_APP:
     #since we're using heroku, we want to check for HTTP_X_FORWARDED_FOR first, then remote_addr
     AXES_IPWARE_META_PRECEDENCE_ORDER = [
         'HTTP_X_FORWARDED_FOR',
