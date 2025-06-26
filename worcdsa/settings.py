@@ -13,10 +13,9 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
-from dotenv import load_dotenv
+
 from datetime import timedelta
 
-load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -29,7 +28,7 @@ os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 SECRET_KEY = os.getenv("SECRET_KEY", "localhost")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 #From https://github.com/heroku/python-getting-started/blob/main/gettingstarted/settings.py
 # The `DYNO` env var is set on Heroku CI, but it's not a real Heroku app, so we have to
@@ -149,6 +148,8 @@ if IS_HEROKU_APP:
             ),
         }
 else:
+    from dotenv import load_dotenv
+    load_dotenv()
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
@@ -159,8 +160,6 @@ else:
             "PORT": os.getenv("DB_PORT", "5432"),
             }
         }
-
-print(os.getenv("DB_USER"))
 
 
 
