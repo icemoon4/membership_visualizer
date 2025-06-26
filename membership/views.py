@@ -15,12 +15,14 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from membership.models import Member, MembershipCount
 from membership.serializers import MemberSerializer, MembershipCountSerializer
 
 
 # Create your views here.
+@ensure_csrf_cookie
 def index(request):
     return render(request, "index.html")
 
