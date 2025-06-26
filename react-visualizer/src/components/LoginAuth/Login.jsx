@@ -7,7 +7,7 @@ import axios from 'redaxios';
 import Cookies from 'js-cookie';
 
 
-export default function Login({ onLoginSuccess, setToken }) {
+export default function Login({ onLoginSuccess, setAccessToken, setRefreshToken }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorDisplay, setError] = useState("");
@@ -31,7 +31,8 @@ export default function Login({ onLoginSuccess, setToken }) {
       }
   );
       setError(null);
-      setToken(response.data.access);
+      setAccessToken(response.data.access);
+      setRefreshToken(response.data.refresh);
       navigate("/app/search");
       onLoginSuccess();
       console.log("navigating");

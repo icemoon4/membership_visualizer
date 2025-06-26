@@ -1,12 +1,12 @@
 import axios from 'redaxios';
 
-export const validateToken = async (accessToken, setAccessToken) => {
+export const validateToken = async (accessToken, refreshToken, setRefreshToken, setAccessToken) => {
   try {
     const response = await axios.get("/api/validate-token/", {
       headers: {
         Authorization: `Bearer ${accessToken}`, 
       },
-      withCredentials: true, //to get the refresh token cookie
+      withCredentials: false, //to get the refresh token cookie
     });
     //console.log(response);
     return true;
@@ -14,11 +14,11 @@ export const validateToken = async (accessToken, setAccessToken) => {
     //console.error("Invalid token:", error.response?.data || error.message);
     if (error.response?.status === 401 && setAccessToken) {
       try {
-        const refreshResponse = await axios.post("api/validate-refresh-token/", {}, {
-          withCredentials: true, //to check the contents of our refresh token cookie
+        const refreshResponse = await axios.post("api/validate-refresh-token/", {refresh: refreshToken}, {
+          withCredentials: false, //to check the contents of our refresh token cookie
         });
 
-        setAccessToken(refreshResponse.data.access);
+        setRefreshToken(refreshResponse.data.access);
         return true;
       } 
       catch (refreshError){

@@ -18,6 +18,7 @@ function App() {
   //add a check for login state that returns only the login page here
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   const [accessToken, setAccessToken] = useState(null)
+  const [refreshToken, setRefreshToken] = useState(null)
   const [loading, setLoading] = useState(true); // Loading state for validation
   useEffect(() => {
     const checkAuth = async () => {
@@ -34,7 +35,7 @@ function App() {
       }
       //did we get a token? let's validate it
       if (token) {
-        const isValid = await validateToken(token, setAccessToken);
+        const isValid = await validateToken(token, refreshToken, setRefreshToken, setAccessToken);
         setIsAuthenticated(isValid);
       } else {
         setIsAuthenticated(false);
@@ -48,6 +49,7 @@ function App() {
   useEffect(() => {
   const handleIdleEvent = () => {
     setAccessToken(null);
+    setRefreshToken(null);
     isAuthenticated(false);
     alert('Logged out due to inactivity');
   };
@@ -114,7 +116,7 @@ function App() {
         <Routes>
           <Route
             path="/app/login"
-            element={<Login onLoginSuccess={() => setIsAuthenticated(true)} setToken={setAccessToken}/>}
+            element={<Login onLoginSuccess={() => setIsAuthenticated(true)} setAccessToken={setAccessToken} setRefreshToken={setRefreshToken}/>}
           />
           <Route path="*" element={<Navigate to="/app/login" />} />
         </Routes>
