@@ -13,8 +13,10 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
+from dotenv import load_dotenv
 from datetime import timedelta
 
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -29,8 +31,6 @@ SECRET_KEY = os.getenv("SECRET_KEY", "localhost")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
-
 #From https://github.com/heroku/python-getting-started/blob/main/gettingstarted/settings.py
 # The `DYNO` env var is set on Heroku CI, but it's not a real Heroku app, so we have to
 # also explicitly exclude CI:
@@ -42,6 +42,11 @@ IS_HEROKU_APP = "DYNO" in os.environ and "CI" not in os.environ
 SESSION_COOKIE_AGE = 300  # seconds (5 minutes)
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_SAVE_EVERY_REQUEST = True
+
+ALLOWED_HOSTS = [
+    "127.0.0.1",  # Allow direct IP access on localhost
+    "localhost",  # Allow using localhost hostname
+]
 
 AXES_LOCKOUT_PARAMETERS = ["ip_address", ["username", "user_agent"]]
 AXES_COOLOFF_TIME = 2 #2 hours
@@ -59,6 +64,8 @@ if IS_HEROKU_APP == "DYNO":
 
     USE_X_FORWARDED_HOST = True #because we're using Heroku, which forwards IPs
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+    ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
 
 
 # Application definition
@@ -145,13 +152,15 @@ else:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "OPTIONS": {
-                "service": "membership_service",
-                "passfile": ".pgpass",
+            "NAME": os.getenv("DB_NAME"),
+            "USER": os.getenv("DB_USER"),
+            "PASSWORD": os.getenv("DB_PASSWORD"),
+            "HOST": os.getenv("DB_HOST", "localhost"),
+            "PORT": os.getenv("DB_PORT", "5432"),
             }
         }
-    }
 
+print(os.getenv("DB_USER"))
 
 
 
