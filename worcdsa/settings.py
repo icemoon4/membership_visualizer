@@ -89,7 +89,6 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     "axes",
-    "rest_framework_simplejwt",
 ]
 
 SIMPLE_JWT = {
