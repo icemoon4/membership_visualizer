@@ -68,7 +68,7 @@ class LoginView(APIView):
        def post(self, request):
            username = request.data.get('username')
            password = request.data.get('password')
-           user = authenticate(username=username, password=password)
+           user = authenticate(request=request, username=username, password=password)
            if not user:
                raise AuthenticationFailed("Invalid credentials")
            if user:
