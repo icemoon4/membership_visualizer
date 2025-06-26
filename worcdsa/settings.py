@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     "common.apps.CommonConfig",
     "django.contrib.admin",
     "django.contrib.auth",
-    "BruteBuster",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
@@ -59,6 +58,7 @@ INSTALLED_APPS = [
     "rest_framework",
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
+    "axes",
     #'myapp', for some reason in the tut they had their own app listed; try this later
     "simple_history",
 ]
@@ -72,6 +72,7 @@ SIMPLE_JWT = {
 }
 
 MIDDLEWARE = [
+    "axes.middleware.AxesMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -82,7 +83,6 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
-    "BruteBuster.middleware.RequestMiddleware",
 ]
 
 ROOT_URLCONF = "worcdsa.urls"

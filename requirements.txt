@@ -5,9 +5,9 @@ django-extensions==3.2.3
 django-simple-history>=3.7.0
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.3.1
-django-brutebuster2==0.2.0
 dj-database-url==3.0.0
 gunicorn==23.0.0
 isort==5.12.0
 psycopg==3.1.10
 whitenoise==6.9.0
+django-axes=8.0.0
