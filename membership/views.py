@@ -10,6 +10,7 @@ from django.core import serializers
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from rest_framework import viewsets
+from rest_framework.exceptions import AuthenticationFaile
 from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -68,6 +69,8 @@ class LoginView(APIView):
            username = request.data.get('username')
            password = request.data.get('password')
            user = authenticate(username=username, password=password)
+           if not user:
+               raise AuthenticationFailed("Invalid credentials")
            if user:
                 refresh = RefreshToken.for_user(user)
                 res = Response()
@@ -82,7 +85,7 @@ class LoginView(APIView):
                     "access": str(refresh.access_token),
                 }
                 return res
-           return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+            
 
 class ValidateTokenView(APIView):
     authentication_classes = [JWTAuthentication]
