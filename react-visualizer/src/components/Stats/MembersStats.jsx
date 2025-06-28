@@ -12,10 +12,10 @@ export default function MembersStats() {
 
   const [tableData, setTableData] = useState([]);
 
-  const [chartDates, setChartDates] = useState([]);
-  const [tableDates, setTableDates] = useState([]);
+  const [dateRangeIsLoading, setDateRangeLoading] = useState(true);
 
   const [dates, setDates] = useState([]);
+  const [dateRange, setDateRange] = useState([]);
 
   const data = [];
 
@@ -83,6 +83,10 @@ export default function MembersStats() {
     }
   }, [dates]);
 
+  useEffect(() => {
+    fetchDateRanges();
+  }, []);
+
   function fitChartDataToRange(dates) {
     if (!dates || Object.keys(dates).length !== 2 || !cleanedData) return;
     const fromDate = moment(dates[0]).format("YYYY-MM-DD"); //make sure all formats match
@@ -103,16 +107,37 @@ export default function MembersStats() {
     setTableData(transformedData);
   }
 
+  async function fetchDateRanges() {
+    setDateRangeLoading(true);
+    try {
+      const res = await fetch(`/api/earliest_listdate/`);
+      const json = await res.json();
+      const earliest = json["earliest_date"];
+      const latest = json["latest_date"];
+
+      setDateRange([earliest, latest]);
+    } catch (error) {
+      console.error("Failed to fetch earliest date", error);
+    } finally {
+      setDateRangeLoading(false);
+    }
+  }
+
   if (!membershipCounts) {
     return <p>Membership statistics not found.</p>;
   }
-  if (isLoading) {
+  if (isLoading || dateRangeIsLoading) {
     return <p>Loading statistics...</p>;
   }
 
   return (
     <main className={styles.statistics}>
-      <FilterChartForm datesRange={dates} defaultDates={dates} asideName="chart" setDates={setDates} />
+      <FilterChartForm
+        datesRange={dateRange}
+        defaultDates={dates}
+        asideName="chart"
+        setDates={setDates}
+      />
       <div className={styles.asideContainer}>
         <aside className={styles.numbersAside}>
           <h2>Percent Change Over Time</h2>
