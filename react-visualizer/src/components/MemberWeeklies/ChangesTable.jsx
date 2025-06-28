@@ -20,13 +20,13 @@ export default function ChangesTable({ data }) {
         change_from:
           type === "updated"
             ? Object.values(value.updated_values)
-                .map(([_, from]) => from)
+                .map(([from]) => from)
                 .join(",")
             : "",
         change_to:
           type === "updated"
             ? Object.values(value.updated_values)
-                .map(([to]) => to)
+                .map(([_, to]) => to)
                 .join(",")
             : "",
         type,
@@ -35,8 +35,8 @@ export default function ChangesTable({ data }) {
 
   const allMembers = [
     ...extractMembers(new_values, "new"),
-    ...extractMembers(updated_values, "updated"),
     ...extractMembers(deleted_values, "deleted"),
+    ...extractMembers(updated_values, "updated"),
   ];
 
   console.log(allMembers);
