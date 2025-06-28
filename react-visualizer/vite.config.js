@@ -18,7 +18,7 @@ export default defineConfig({
   },
   build: {
     outDir: path.resolve(__dirname, '../static/react'),
-    emptyOutDir: false,
+    emptyOutDir: true,
     rollupOptions: {
       output: {
         manualChunks(id) {

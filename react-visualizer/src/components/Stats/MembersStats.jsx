@@ -9,10 +9,14 @@ export default function MembersStats() {
   const [cleanedData, setCleanData] = useState(null);
   const [filteredChartData, setChartData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [chartDates, setChartDates] = useState([]);
-  const [tableDates, setTableDates] = useState([]);
+
   const [tableData, setTableData] = useState([]);
 
+  const [chartDates, setChartDates] = useState([]);
+  const [tableDates, setTableDates] = useState([]);
+
+  const [dates, setDates] = useState([]);
+  console.log("call 0" + dates);
   const data = [];
 
   useEffect(() => {
@@ -50,8 +54,9 @@ export default function MembersStats() {
         return Date.parse(a) > Date.parse(b);
       });
     //earliest date will be first, latest date is at the end
-    setChartDates([orderedDates[0], orderedDates[orderedDates.length - 1]]);
-    setTableDates([orderedDates[0], orderedDates[orderedDates.length - 1]]);
+    console.log("call 1" + dates);
+    setDates([orderedDates[0], orderedDates[orderedDates.length - 1]]);
+    console.log("call 2" + dates);
   }
 
   //transforming our json data to fit google charts' data structure
@@ -75,18 +80,12 @@ export default function MembersStats() {
   }, [membershipCounts]);
 
   useEffect(() => {
-    if (chartDates && cleanedData) {
-      fitChartDataToRange(chartDates, "chart");
+    if (dates && cleanedData) {
+      fitChartDataToRange(dates);
     }
-  }, [chartDates]);
+  }, [dates]);
 
-  useEffect(() => {
-    if (tableDates && cleanedData) {
-      fitChartDataToRange(tableDates, "table");
-    }
-  }, [tableDates]);
-
-  function fitChartDataToRange(dates, chartType) {
+  function fitChartDataToRange(dates) {
     if (!dates || Object.keys(dates).length !== 2 || !cleanedData) return;
     const fromDate = moment(dates[0]).format("YYYY-MM-DD"); //make sure all formats match
     const toDate = moment(dates[1]).format("YYYY-MM-DD");
@@ -102,12 +101,8 @@ export default function MembersStats() {
         transformedData.push(cleanedData[i]);
       }
     }
-    if (chartType === "chart") {
-      setChartData(transformedData);
-    }
-    if (chartType === "table") {
-      setTableData(transformedData);
-    }
+    setChartData(transformedData);
+    setTableData(transformedData);
   }
 
   if (!membershipCounts) {
@@ -119,29 +114,22 @@ export default function MembersStats() {
 
   return (
     <main className={styles.statistics}>
-      <aside className={styles.numbersAside}>
-        <h2>Percent Change Over Time</h2>
-        <div className={styles.chartContainer}>
-          <FilterChartForm
-            dates={tableDates}
-            asideName="chart"
-            setDates={setTableDates}
-          />
-          <Chart data={tableData} type="Table" />
-        </div>
-      </aside>
-      <aside className={styles.chartAside}>
-        <h2>Area Chart of Membership Trends</h2>
+      <FilterChartForm dates={dates} asideName="chart" setDates={setDates} />
+      <div className={styles.asideContainer}>
+        <aside className={styles.numbersAside}>
+          <h2>Percent Change Over Time</h2>
+          <div className={styles.chartContainer}>
+            <Chart data={tableData} type="Table" />
+          </div>
+        </aside>
+        <aside className={styles.chartAside}>
+          <h2>Area Chart of Membership Trends</h2>
 
-        <div className={styles.chartContainer}>
-          <FilterChartForm
-            dates={chartDates}
-            asideName="chart"
-            setDates={setChartDates}
-          />
-          <Chart data={filteredChartData} type="AreaChart" />
-        </div>
-      </aside>
+          <div className={styles.chartContainer}>
+            <Chart data={filteredChartData} type="AreaChart" />
+          </div>
+        </aside>
+      </div>
     </main>
   );
 }
