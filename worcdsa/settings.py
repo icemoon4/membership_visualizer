@@ -48,11 +48,6 @@ SESSION_COOKIE_AGE = 300  # seconds (5 minutes)
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_SAVE_EVERY_REQUEST = True
 
-ALLOWED_HOSTS = [
-    "127.0.0.1",  # Allow direct IP access on localhost
-    "localhost",  # Allow using localhost hostname
-]
-
 AXES_LOCKOUT_PARAMETERS = ["ip_address", ["username", "user_agent"]]
 AXES_COOLOFF_TIME = 2 #2 hours
 AXES_FAILURE_LIMIT = 5 #5 max failed login attempts
@@ -69,8 +64,6 @@ if IS_HEROKU_APP:
 
     USE_X_FORWARDED_HOST = True #because we're using Heroku, which forwards IPs
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
-    ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
 
 
 # Application definitn
@@ -152,8 +145,6 @@ if IS_HEROKU_APP:
             ),
         }
 else:
-    from dotenv import load_dotenv
-    load_dotenv()
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
