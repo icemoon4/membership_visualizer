@@ -16,7 +16,7 @@ export default function MembersStats() {
   const [tableDates, setTableDates] = useState([]);
 
   const [dates, setDates] = useState([]);
-  console.log("call 0" + dates);
+
   const data = [];
 
   useEffect(() => {
@@ -54,9 +54,7 @@ export default function MembersStats() {
         return Date.parse(a) > Date.parse(b);
       });
     //earliest date will be first, latest date is at the end
-    console.log("call 1" + dates);
     setDates([orderedDates[0], orderedDates[orderedDates.length - 1]]);
-    console.log("call 2" + dates);
   }
 
   //transforming our json data to fit google charts' data structure
@@ -114,7 +112,7 @@ export default function MembersStats() {
 
   return (
     <main className={styles.statistics}>
-      <FilterChartForm dates={dates} asideName="chart" setDates={setDates} />
+      <FilterChartForm datesRange={dates} defaultDates={dates} asideName="chart" setDates={setDates} />
       <div className={styles.asideContainer}>
         <aside className={styles.numbersAside}>
           <h2>Percent Change Over Time</h2>

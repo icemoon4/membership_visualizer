@@ -14,6 +14,7 @@ import { validateToken } from "./components/LoginAuth/validateToken";
 import PrivateRoute from "./components/LoginAuth/PrivateRoute";
 import axios from "redaxios";
 import { IdleTimerProvider } from "react-idle-timer";
+import MemberWeeklies from "./components/MemberWeeklies/MemberWeeklies";
 
 function App() {
   //add a check for login state that returns only the login page here
@@ -95,6 +96,18 @@ function App() {
               <IdleTimerProvider timeout={FIVE_MINUTES} onIdle={handleOnIdle}>
                 <MembersProvider>
                   <MembersStats />
+                </MembersProvider>
+              </IdleTimerProvider>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/app/weeklies"
+          element={
+            <PrivateRoute isValid={isAuthenticated} token={accessToken}>
+              <IdleTimerProvider timeout={FIVE_MINUTES} onIdle={handleOnIdle}>
+                <MembersProvider>
+                  <MemberWeeklies />
                 </MembersProvider>
               </IdleTimerProvider>
             </PrivateRoute>
