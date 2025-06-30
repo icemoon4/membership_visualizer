@@ -81,6 +81,13 @@ def group_data(data: list, key="actionkit_id"):
 
     return sorted_data
 
+@api_view(["GET"])
+def earliest_listdate(request):
+    if request.method == "GET":
+        earliest_list_date = Member.history.earliest("list_date").list_date
+        latest_list_date = Member.history.latest("list_date").list_date
+        return JsonResponse({"earliest_date": earliest_list_date, "latest_date": latest_list_date})
+
 
 @api_view(["GET"])
 def membership_updates(request, start_date: datetime.date, end_date: datetime.date):
@@ -151,8 +158,12 @@ def membership_updates(request, start_date: datetime.date, end_date: datetime.da
             # any leftover rows were removed from the new file
             deleted_values[ak_id] = old_row
 
-        return new_values, updated_values, deleted_values
-    return {}, {}, {}
+        return JsonResponse({
+            "new_values": new_values,
+            "updated_values": updated_values,
+            "deleted_values": deleted_values,
+        })
+    return JsonResponse({{},{},{}})
 
 
 # reffed from here https://dev.to/akdevelop/django-react-login-how-to-setup-a-login-page-5dl8

@@ -1,0 +1,20 @@
+.new {
+  background-color: #daf2d0;
+}
+.updated {
+  background-color: #fbe2d5;
+}
+
+.deleted {
+  background-color: #ff9999;
+}
+
+table {
+  margin-top: 25px;
+  border-collapse: collapse;
+}
+
+td {
+  padding: 5px 85px 5px 5px;
+  border: 1px solid #e0e0e0;
+}

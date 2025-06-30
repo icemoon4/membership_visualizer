@@ -3,7 +3,7 @@ import FilterFieldDatepicker from "../MemberSearch/filterFieldDatepicker.jsx";
 import styles from "./memberStats.module.css";
 import mainStyles from "../../app.module.css";
 
-export default function FilterChartForm({ asideName, dates, setDates }) {
+export default function FilterChartForm({ asideName, datesRange, defaultDates, setDates }) {
   const [currentParameters, setCurrentParameters] = useState({});
   function setQuery(key, value) {
     setCurrentParameters((prevParams) => ({
@@ -20,14 +20,14 @@ export default function FilterChartForm({ asideName, dates, setDates }) {
       <FilterFieldDatepicker
         name={`${asideName}_from`}
         setQuery={setQuery}
-        defaultDate={dates[0]}
-        datesRange={dates}
+        defaultDate={defaultDates[0]}
+        datesRange={datesRange}
       />
       <FilterFieldDatepicker
         name={`${asideName}_to`}
         setQuery={setQuery}
-        defaultDate={dates[1]}
-        datesRange={dates}
+        defaultDate={defaultDates[1]}
+        datesRange={datesRange}
       />{" "}
       <button className={mainStyles.redButton} onClick={(e) => handleSubmit(e)}>
         Go!

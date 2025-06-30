@@ -10,6 +10,7 @@ export default function Nav() {
         <a href="/admin/">Admin</a>
         <Link to="/app/search">Search</Link>
         <Link to="/app/statistics">Statistics</Link>
+        <Link to="/app/weeklies">Membership Changes</Link>
         <Link to="/app/logout">Log out</Link>
       </div>
     </nav>
