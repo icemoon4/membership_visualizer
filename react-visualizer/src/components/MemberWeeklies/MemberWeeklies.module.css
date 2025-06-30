@@ -33,7 +33,7 @@ tr {
   padding: revert;
 }
 
-.tableContainer {
+.dataDisplayMain {
   background-color: white;
   display: flex;
   justify-content: center;
@@ -42,7 +42,7 @@ tr {
   flex-direction: column;
 }
 
-.tableContainer header {
+.dataDisplayMain header {
   margin: -50px;
   margin-bottom: unset;
   padding: 5px;
@@ -52,25 +52,25 @@ tr {
   color: white;
 }
 
-.tableContainer header input {
+.dataDisplayMain header input, .statistics header input {
   color: var(--body-font-color) !important;
 }
 
-.tableContainer h2.tableTitle {
+.dataDisplayMain h2.tableTitle {
   color: white;
   margin: 10px 0px;
 }
 
-.tableContainer form {
+.dataDisplayMain form {
   padding-top: 0px;
   justify-content: left;
 }
 
-.memberWeeklies .tableContainer p {
+.memberWeeklies .dataDisplayMain p {
   margin-top: 50px;
 }
 
-.memberWeeklies .tableContainer table {
+.memberWeeklies .dataDisplayMain table {
   margin-top: 50px;
   border-collapse: collapse;
   color: black;

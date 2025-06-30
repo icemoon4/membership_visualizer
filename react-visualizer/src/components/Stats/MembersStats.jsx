@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Chart from "./Chart.jsx";
 import styles from "./memberStats.module.css";
 import FilterChartForm from "./FilterChartForm.jsx";
+import FetchRangeHeader from "../MemberWeeklies/fetchRangeHeader";
+import stylesHeader from "../MemberWeeklies/MemberWeeklies.module.css";
 import moment from "moment";
 
 export default function MembersStats() {
@@ -122,37 +124,37 @@ export default function MembersStats() {
       setDateRangeLoading(false);
     }
   }
-
-  if (!membershipCounts) {
-    return <p>Membership statistics not found.</p>;
-  }
-  if (isLoading || dateRangeIsLoading) {
-    return <p>Loading statistics...</p>;
-  }
-
   return (
-    <main className={styles.statistics}>
-      <FilterChartForm
-        datesRange={dateRange}
-        defaultDates={dates}
-        asideName="chart"
+    <main
+      className={[styles.statistics, stylesHeader.dataDisplayMain].join(" ")}
+    >
+      <FetchRangeHeader
+        dateRange={dateRange}
+        dates={dates}
         setDates={setDates}
+        sectionTitle="WorcDSA Membership Statistics"
       />
-      <div className={styles.asideContainer}>
-        <aside className={styles.numbersAside}>
-          <h2>Percent Change Over Time</h2>
-          <div className={styles.chartContainer}>
-            <Chart data={tableData} type="Table" />
-          </div>
-        </aside>
-        <aside className={styles.chartAside}>
-          <h2>Area Chart of Membership Trends</h2>
+      {!membershipCounts ? (
+        <p>Membership statistics not found.</p>
+      ) : isLoading || dateRangeIsLoading ? (
+        <p>Loading statistics...</p>
+      ) : (
+        <div className={styles.asideContainer}>
+          <aside className={styles.numbersAside}>
+            <h2>Percent Change Over Time</h2>
+            <div className={styles.chartContainer}>
+              <Chart data={tableData} type="Table" />
+            </div>
+          </aside>
+          <aside className={styles.chartAside}>
+            <h2>Area Chart of Membership Trends</h2>
 
-          <div className={styles.chartContainer}>
-            <Chart data={filteredChartData} type="AreaChart" />
-          </div>
-        </aside>
-      </div>
+            <div className={styles.chartContainer}>
+              <Chart data={filteredChartData} type="AreaChart" />
+            </div>
+          </aside>
+        </div>
+      )}
     </main>
   );
 }

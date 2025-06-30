@@ -3,6 +3,8 @@ import axios from "redaxios";
 import FilterChartForm from "../Stats/FilterChartForm";
 import ChangesTable from "./ChangesTable";
 import styles from "./MemberWeeklies.module.css";
+import FetchRangeHeader from "./fetchRangeHeader";
+import classnames from 'classnames';
 
 export default function MemberWeeklies() {
   const [dates, setDates] = useState([]);
@@ -83,17 +85,14 @@ export default function MemberWeeklies() {
   }
 
   return (
-    <main className={styles.memberWeeklies}>
+    <main className={[styles.memberWeeklies, styles.dataDisplayMain].join(" ")}>
       <section className={styles.tableContainer}>
-        <header>
-          <h2 className={styles.tableTitle}>Membership Changes</h2>
-          <FilterChartForm
-            datesRange={dateRange}
-            asideName="chart"
-            defaultDates={dates}
-            setDates={setDates}
-          />
-        </header>
+        <FetchRangeHeader
+          dateRange={dateRange}
+          dates={dates}
+          setDates={setDates}
+          sectionTitle="Membership Changes"
+        />
         {rangeNotFound ? (
           <p>
             Data not found for that date range. Try inputting a different range.
