@@ -32,7 +32,7 @@ export default function MemberWeeklies() {
   useEffect(() => {
     if (dates.length === 2) {
       fetchMembershipData();
-      console.log("Dates", dates)
+      console.log("Dates", dates);
     }
   }, [dates]);
 
@@ -83,22 +83,27 @@ export default function MemberWeeklies() {
   }
 
   return (
-    <div>
-      <FilterChartForm
-        datesRange={dateRange}
-        asideName="chart"
-        defaultDates={dates}
-        setDates={setDates}
-      />
-      {rangeNotFound ? (
-        <p>
-          Data not found for that date range. Try inputting a different range.
-        </p>
-      ) : membershipLoading || earliestDateLoading ? (
-        <p>Loading data...</p>
-      ) : (
-        <ChangesTable data={data} />
-      )}
-    </div>
+    <main className={styles.memberWeeklies}>
+      <section className={styles.tableContainer}>
+        <header>
+          <h2 className={styles.tableTitle}>Membership Changes</h2>
+          <FilterChartForm
+            datesRange={dateRange}
+            asideName="chart"
+            defaultDates={dates}
+            setDates={setDates}
+          />
+        </header>
+        {rangeNotFound ? (
+          <p>
+            Data not found for that date range. Try inputting a different range.
+          </p>
+        ) : membershipLoading || earliestDateLoading ? (
+          <p>Loading data...</p>
+        ) : (
+          <ChangesTable data={data} />
+        )}
+      </section>
+    </main>
   );
 }

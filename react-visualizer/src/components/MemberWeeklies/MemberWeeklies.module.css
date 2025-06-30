@@ -1,20 +1,97 @@
 .new {
   background-color: #daf2d0;
 }
+
+.new:hover {
+  background-color: #d1dfc0;
+}
+
 .updated {
   background-color: #fbe2d5;
+}
+
+.updated:hover {
+  background-color: #f1d0c4;
 }
 
 .deleted {
   background-color: #ff9999;
 }
 
-table {
-  margin-top: 25px;
+.deleted:hover {
+  background-color: #f58d8d;
+}
+tr {
+  transition: 0.1s;
+}
+
+.memberWeeklies form {
+  padding-top: 50px;
+}
+
+.memberWeeklies form button {
+  padding: revert;
+}
+
+.tableContainer {
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  padding: 50px;
+  margin: 50px;
+  flex-direction: column;
+}
+
+.tableContainer header {
+  margin: -50px;
+  margin-bottom: unset;
+  padding: 5px;
+  padding-left: 10px;
+  padding-bottom: 10px;
+  background-image: linear-gradient(to right, var(--dark-dsa-red), transparent);
+  color: white;
+}
+
+.tableContainer header input {
+  color: var(--body-font-color) !important;
+}
+
+.tableContainer h2.tableTitle {
+  color: white;
+  margin: 10px 0px;
+}
+
+.tableContainer form {
+  padding-top: 0px;
+  justify-content: left;
+}
+
+.memberWeeklies .tableContainer p {
+  margin-top: 50px;
+}
+
+.memberWeeklies .tableContainer table {
+  margin-top: 50px;
   border-collapse: collapse;
+  color: black;
+  box-shadow: 0px 0px 3px #4a2424;
 }
 
 td {
-  padding: 5px 85px 5px 5px;
-  border: 1px solid #e0e0e0;
+  padding: 10px 2vw 10px 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+tr td:nth-of-type(4) {
+  text-transform: uppercase;
+}
+
+thead tr {
+  color: var(--dark-dsa-red);
+  background-color: white;
+  text-align: left;
+}
+
+thead tr th {
+  padding: 15px;
 }

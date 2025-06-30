@@ -16,7 +16,7 @@
   height: 90vh;
 }
 
-section div {
+.cardContainer section div {
   border-bottom: 1px #a4a4a4 dashed;
   padding: 3px 1px;
 }

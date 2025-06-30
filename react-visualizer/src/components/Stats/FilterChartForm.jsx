@@ -18,13 +18,13 @@ export default function FilterChartForm({ asideName, datesRange, defaultDates, s
   return (
     <form className={styles.chartForm}>
       <FilterFieldDatepicker
-        name={`${asideName}_from`}
+        name={`From`}
         setQuery={setQuery}
         defaultDate={defaultDates[0]}
         datesRange={datesRange}
       />
       <FilterFieldDatepicker
-        name={`${asideName}_to`}
+        name={`to`}
         setQuery={setQuery}
         defaultDate={defaultDates[1]}
         datesRange={datesRange}
